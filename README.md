@@ -1,6 +1,9 @@
 <div align="center">
 
-# Agent Delegation Chain Standard (ADCS)
+<img width="349" height="452" alt="adcs" src="https://github.com/user-attachments/assets/57e6302b-8479-43a1-b975-17bcd6ed82d5" />
+
+<br>
+<br>
 
 ![Status: Draft for Public Comment](https://img.shields.io/badge/Status-Draft%20for%20Public%20Comment-yellow)
 ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-blue)
