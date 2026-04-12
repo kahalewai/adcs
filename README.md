@@ -14,7 +14,7 @@
 
 ## Intro
 
-AI agents delegate tasks to other agents, which delegate to other agents, which invoke tools. At every hop, the scope of what an agent is authorized to do must travel with the action — and at no hop may that scope expand beyond what was originally granted. Today, no standard mechanism enforces this. Each framework manages delegation ad hoc, through implicit context passing or application-layer trust assumptions. A sub-agent can end up with broader permissions than its delegator possesses. Constraints imposed by a human originator vanish by the time a tool is invoked. Long delegation chains become opaque. Cross-protocol delegations carry no verifiable authorization record.
+AI agents delegate tasks to other agents, which delegate to other agents, which invoke tools. At every hop, the scope of what an agent is authorized to do must travel with the action, and at no hop may that scope expand beyond what was originally granted. Today, no standard mechanism enforces this. Each framework manages delegation ad hoc, through implicit context passing or application-layer trust assumptions. A sub-agent can end up with broader permissions than its delegator possesses. Constraints imposed by a human originator vanish by the time a tool is invoked. Long delegation chains become opaque. Cross-protocol delegations carry no verifiable authorization record.
 
 <br>
 
@@ -22,22 +22,22 @@ AI agents delegate tasks to other agents, which delegate to other agents, which 
 
 <br>
 
-ADCS (Agent Delegation Chain Standard) is an open, vendor-neutral standard that defines how permissions and constraints flow from an originating principal through a chain of agent delegations, and how each hop in that chain is verified to be **monotonically restrictive** — meaning scope can only narrow, never expand. Every delegation is cryptographically signed using Decentralized Identifiers (DIDs). Every chain is verified by a four-phase algorithm that any conformant implementation can execute independently. No agent in the chain can grant more than it received.
+ADCS (Agent Delegation Chain Standard) is an open, vendor-neutral standard that defines how permissions and constraints flow from an originating principal through a chain of agent delegations, and how each hop in that chain is verified to be monotonically restrictive, meaning scope can only narrow, never expand. Every delegation is cryptographically signed using Decentralized Identifiers (DIDs). Every chain is verified by a four-phase algorithm that any conformant implementation can execute independently. No agent in the chain can grant more than it received.
 
 <br>
 
-ADCS addresses the authorization gap between session-level identity (OAuth 2.1) and session-level circuit breaking (ALS). It answers the question: **given that this agent session is permitted to run, is this specific agent authorized to perform this specific action within the scope that was delegated to it?**
+ADCS addresses the authorization gap between session-level identity (OAuth 2.1) and session-level circuit breaking (ALS). It answers the question: given that this agent session is permitted to run, is this specific agent authorized to perform this specific action within the scope that was delegated to it?
 
 <br>
 
 ADCS was designed to support the full complexity of real-world agentic workflows:
 
-* **Linear and DAG chains** — parallel agent branches that converge with defined merge semantics
-* **Conditional permissions** — permissions gated on human approval, policy evaluation, or time windows
-* **Cross-protocol delegation** — chains spanning MCP, A2A, ACP, and HTTP with verified authorization at every boundary
-* **Multi-party originator quorum** — dual-control and multi-party authorization for regulated industries
-* **Continuous revocation** — real-time authorization change propagation via CAEP
-* **Permission escalation** — agents can request additional scope mid-task without abandoning the chain
+* Linear and DAG chains - parallel agent branches that converge with defined merge semantics
+* Conditional permissions - permissions gated on human approval, policy evaluation, or time windows
+* Cross-protocol delegation - chains spanning MCP, A2A, ACP, and HTTP with verified authorization at every boundary
+* Multi-party originator quorum - dual-control and multi-party authorization for regulated industries
+* Continuous revocation - real-time authorization change propagation via CAEP
+* Permission escalation - agents can request additional scope mid-task without abandoning the chain
 
 <br>
 <br>
@@ -46,21 +46,21 @@ ADCS was designed to support the full complexity of real-world agentic workflows
 
 Existing mechanisms for managing agent authorization are insufficient:
 
-* OAuth scopes are session-level — they don't subdivide across a multi-agent task chain
+* OAuth scopes are session-level, they don't subdivide across a multi-agent task chain
 * Application-layer trust assumptions let sub-agents inherit ambient permissions they were never explicitly granted
 * No existing mechanism verifies that constraints imposed by a human originator survive through every delegation hop
 * Cross-protocol delegations (A2A task → MCP tool) carry no verifiable authorization record
 * Key rotation or agent decommissioning leaves orphaned credentials with residual access
 * No existing mechanism provides a cryptographically verifiable, fail-closed, monotonically restrictive delegation chain
 
-ADCS closes those gaps with a normative data model, a four-phase verification algorithm, and cryptographic binding at every hop — independent of the agents' own compliance and independent of any single protocol.
+ADCS closes those gaps with a normative data model, a four-phase verification algorithm, and cryptographic binding at every hop, independent of the agents' own compliance and independent of any single protocol.
 
 <br>
 <br>
 
 ## How Does ADCS Work?
 
-**Step 1 — Human (or system) creates an originator declaration**
+**Step 1 - Human (or system) creates an originator declaration**
 
 ```
 Human → Host Application: "Book me a round trip to Tokyo, budget under $3000"
@@ -68,7 +68,7 @@ Host Application: Creates originator declaration with permissions, constraints, 
 Originator: Signs declaration with DID-bound key
 ```
 
-**Step 2 — Orchestrating agent delegates to specialist agents**
+**Step 2 - Orchestrating agent delegates to specialist agents**
 
 ```
 Orchestrator: Receives originator's scope
@@ -76,7 +76,7 @@ Orchestrator → Hotel Agent: Delegation with narrowed permissions (search only)
 Each delegation: Cryptographically signed, references the originator declaration
 ```
 
-**Step 3 — Specialist agent invokes a tool**
+**Step 3 - Specialist agent invokes a tool**
 
 ```
 Hotel Agent → MCP Tool Server: Capability token + delegation chain
@@ -84,7 +84,7 @@ Tool Server: Executes four-phase verification algorithm
 Verification: Structural → Cryptographic → Temporal → Monotonic Restriction → Revocation
 ```
 
-**Step 4 — Verification succeeds or fails closed**
+**Step 4 - Verification succeeds or fails closed**
 
 ```
 All phases pass: Tool executes within verified scope
@@ -92,7 +92,7 @@ Any phase fails: Action denied. No partial validity. No fallback.
 Error code returned: PERMISSION_EXPANSION, CONSTRAINT_LOOSENED, DELEGATION_EXPIRED, etc.
 ```
 
-**Step 5 — Full audit trail is preserved**
+**Step 5 - Full audit trail is preserved**
 
 ```
 Every chain, every verification event, every originator intent → audit log
@@ -126,7 +126,7 @@ ADCS defines three conformance levels. Levels are cumulative and designed for in
 
 <br>
 
-**Level 1 — Core Conformance**
+**Level 1 - Core Conformance**
 
 Implement the delegation data model and the four-phase verification algorithm. No token infrastructure required.
 
@@ -141,21 +141,21 @@ Implement the delegation data model and the four-phase verification algorithm. N
 
 <br>
 
-**Level 2 — Token Conformance**
+**Level 2 - Token Conformance**
 
 Level 1 plus JWT capability tokens with proof-of-possession binding.
 
 * JWT capability tokens carrying effective scope, originator trust tier, and chain reference
-* Proof-of-possession via mTLS or DPoP — tokens are bound to the holder's transport credential
+* Proof-of-possession via mTLS or DPoP, tokens are bound to the holder's transport credential
 * Token replay prevention via nonce tracking
-* Token-only presentation mode — full chain stays with governance layer, only token reaches the tool server
+* Token-only presentation mode, full chain stays with governance layer, only token reaches the tool server
 * Condition satisfaction record verification for conditional permissions
 
 > *Sufficient for: deployments where tool servers independently verify authorization without receiving the full chain.*
 
 <br>
 
-**Level 3 — Full Conformance**
+**Level 3 - Full Conformance**
 
 Level 2 plus protocol bindings, revocation infrastructure, and advanced features.
 
@@ -177,20 +177,20 @@ Level 2 plus protocol bindings, revocation infrastructure, and advanced features
 
 The ADCS specification defines:
 
-* **Delegation object**: normative structure for a single delegation hop — who granted what to whom, with what constraints, signed by which key
-* **Delegation chain**: ordered sequence or DAG of delegations from originator to terminal action
-* **Originator declaration**: root of every chain — human or system intent, maximum scope, trust tier, optional multi-party quorum
-* **Capability token**: short-lived, transport-bound JWT carrying chain reference and computed effective scope
-* **Four-phase verification algorithm**: structural, cryptographic, temporal, and monotonic restriction verification — normative and deterministic
-* **Monotonic restriction invariant**: scope can only narrow at each hop; permissions removed, constraints tightened, never expanded
-* **Constraint type registry**: 7 core constraint types with defined restriction rules, plus vendor extension support
-* **Cross-protocol bindings**: MCP, A2A, ACP, and HTTP envelope formats with error response mappings
-* **Chain compaction**: summarization of deep chains while preserving auditability
-* **DID-based principal identity**: keys resolved via DID document lookup, decoupled from chain structure
-* **Revocation infrastructure**: revocation lists, push revocation, CAEP continuous revocation, and revocation service metadata
-* **Permission escalation**: standardized protocol for mid-task scope requests
-* **Conformance test suite**: 48+ test vectors covering every normative requirement
-* **Error taxonomy**: 37 error codes across 6 categories with deterministic failure semantics
+* Delegation object: normative structure for a single delegation hop, who granted what to whom, with what constraints, signed by which key
+* Delegation chain: ordered sequence or DAG of delegations from originator to terminal action
+* Originator declaration: root of every chain, human or system intent, maximum scope, trust tier, optional multi-party quorum
+* Capability token: short-lived, transport-bound JWT carrying chain reference and computed effective scope
+* Four-phase verification algorithm: structural, cryptographic, temporal, and monotonic restriction verification, normative and deterministic
+* Monotonic restriction invariant: scope can only narrow at each hop; permissions removed, constraints tightened, never expanded
+* Constraint type registry: 7 core constraint types with defined restriction rules, plus vendor extension support
+* Cross-protocol bindings: MCP, A2A, ACP, and HTTP envelope formats with error response mappings
+* Chain compaction: summarization of deep chains while preserving auditability
+* DID-based principal identity: keys resolved via DID document lookup, decoupled from chain structure
+* Revocation infrastructure: revocation lists, push revocation, CAEP continuous revocation, and revocation service metadata
+* Permission escalation: standardized protocol for mid-task scope requests
+* Conformance test suite: 48+ test vectors covering every normative requirement
+* Error taxonomy: 37 error codes across 6 categories with deterministic failure semantics
 
 <br>
 <br>
@@ -199,12 +199,12 @@ The ADCS specification defines:
 
 Understanding the boundary is as important as understanding the capability:
 
-* **ADCS does not halt agent sessions.** Session-level circuit breaking is the responsibility of ALS. ADCS governs action-level scope within an active session.
-* **ADCS does not verify tool integrity.** Tool artifact signing and integrity verification is the responsibility of the MCP Integrity Standard or equivalent.
-* **ADCS does not enforce semantic constraints.** ADCS verifies that constraints are structurally present and structurally non-loosened at each hop. It does not verify that a terminal action's parameters satisfy those constraints unless a semantic mapping layer is deployed (Section 16.5).
-* **ADCS does not evaluate policy.** Policy engines (OPA, Cedar, Rego) may be used to evaluate chains, but are not specified by ADCS.
-* **ADCS does not provision identities.** ADCS relies on externally established identities anchored in DID documents. Identity provisioning is the responsibility of DID method specifications, SPIFFE/SPIRE, or OAuth 2.1.
-* **ADCS does not detect prompt injection.** A structurally valid chain produced by a manipulated agent will pass verification. ADCS is a layer in a defense-in-depth architecture, not a substitute for adversarial input detection.
+* ADCS does not halt agent sessions. Session-level circuit breaking is the responsibility of ALS. ADCS governs action-level scope within an active session.
+* ADCS does not verify tool integrity. Tool artifact signing and integrity verification is the responsibility of the MCP Integrity Standard or equivalent.
+* ADCS does not enforce semantic constraints. ADCS verifies that constraints are structurally present and structurally non-loosened at each hop. It does not verify that a terminal action's parameters satisfy those constraints unless a semantic mapping layer is deployed (Section 16.5).
+* ADCS does not evaluate policy. Policy engines (OPA, Cedar, Rego) may be used to evaluate chains, but are not specified by ADCS.
+* ADCS does not provision identities. ADCS relies on externally established identities anchored in DID documents. Identity provisioning is the responsibility of DID method specifications, SPIFFE/SPIRE, or OAuth 2.1.
+* ADCS does not detect prompt injection. A structurally valid chain produced by a manipulated agent will pass verification. ADCS is a layer in a defense-in-depth architecture, not a substitute for adversarial input detection.
 
 <br>
 <br>
@@ -343,11 +343,11 @@ ADCS supports three reference deployment topologies:
 
 Organizations do not need to deploy ADCS everywhere simultaneously:
 
-* **Phase 1 — Boundary Enforcement:** Verify chains only at terminal tool servers and external-facing endpoints. Internal agents use ambient trust.
-* **Phase 2 — Orchestrator Adoption:** Orchestrating agents construct chains. Terminal tools verify.
-* **Phase 3 — Full Chain Depth:** All agents construct delegations. Chains verified end-to-end.
+* **Phase 1 - Boundary Enforcement:** Verify chains only at terminal tool servers and external-facing endpoints. Internal agents use ambient trust.
+* **Phase 2 - Orchestrator Adoption:** Orchestrating agents construct chains. Terminal tools verify.
+* **Phase 3 - Full Chain Depth:** All agents construct delegations. Chains verified end-to-end.
 
-Phase 1 alone provides meaningful security: the terminal action is verified, the full chain is checked, and scope restriction is enforced at the point of consequence — with no changes to internal agent implementations.
+Phase 1 alone provides meaningful security: the terminal action is verified, the full chain is checked, and scope restriction is enforced at the point of consequence, with no changes to internal agent implementations.
 
 <br>
 <br>
@@ -363,11 +363,11 @@ The ADCS specification and all reference materials are released under the Apache
 
 Future ADCS extensions planned:
 
-* **Semantic Constraint Mapping Standard** — normative specification for mapping constraint values to tool parameters
-* **Constraint Accounting Service (CAS) Reference Implementation** — cumulative budget tracking across chains
-* **Additional DID Method Bindings** — `did:tdw`, `did:ion`, and other emerging DID methods
-* **ADCS-ALS Integration Profile** — coordinated chain revocation on ALS session halt
-* **Cross-Organization Trust Framework** — mutual recognition agreements and federated DID resolution profiles
+* **Semantic Constraint Mapping Standard** - normative specification for mapping constraint values to tool parameters
+* **Constraint Accounting Service (CAS) Reference Implementation** - cumulative budget tracking across chains
+* **Additional DID Method Bindings** - `did:tdw`, `did:ion`, and other emerging DID methods
+* **ADCS-ALS Integration Profile** - coordinated chain revocation on ALS session halt
+* **Cross-Organization Trust Framework** - mutual recognition agreements and federated DID resolution profiles
 
 <br>
 <br>
@@ -378,16 +378,16 @@ ADCS is an open initiative. The standard is published as a Draft for Public Comm
 
 The project welcomes:
 
-* **Feedback on the specification** — technical review, edge case analysis, implementation experience
-* **Protocol binding implementations** — MCP, A2A, ACP, and HTTP binding libraries
-* **Reference SDK implementations** — chain builder, verifier, token issuer, revocation client (see Appendix E for interface contracts)
-* **Conformance test contributions** — help complete and extend the 48+ test vector suite
-* **Constraint type extensions** — vendor-specific constraint types with restriction rule definitions
-* **DID method integration** — production experience reports with `did:web`, `did:jwk`, `did:key`, and SPIFFE/SVID
-* **Governance layer integrations** — policy engine adapters, semantic mapping implementations, intent-action consistency checkers
-* **Ecosystem tooling** — chain visualization, audit log dashboards, CAS implementations
+* Feedback on the specification - technical review, edge case analysis, implementation experience
+* Protocol binding implementations - MCP, A2A, ACP, and HTTP binding libraries
+* Reference SDK implementations - chain builder, verifier, token issuer, revocation client (see Appendix E for interface contracts)
+* Conformance test contributions - help complete and extend the 48+ test vector suite
+* Constraint type extensions - vendor-specific constraint types with restriction rule definitions
+* DID method integration - production experience reports with `did:web`, `did:jwk`, `did:key`, and SPIFFE/SVID
+* Governance layer integrations - policy engine adapters, semantic mapping implementations, intent-action consistency checkers
+* Ecosystem tooling - chain visualization, audit log dashboards, CAS implementations
 
-The goal is to establish ADCS as the standard authorization chain for multi-agent AI workflows — so that every agent framework, tool server, and governance platform has a single, reliable, interoperable mechanism to verify that an agent is authorized for the action it is attempting, within the scope that was delegated to it.
+The goal is to establish ADCS as the standard authorization chain for multi-agent AI workflows, so that every agent framework, tool server, and governance platform has a single, reliable, interoperable mechanism to verify that an agent is authorized for the action it is attempting, within the scope that was delegated to it.
 
 <br>
 <br>
