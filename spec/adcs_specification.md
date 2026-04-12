@@ -2,9 +2,9 @@
 
 **Status:** Proposed Standard  
 
-**Version:** 1.0.0  
-
 **Date:** April 11, 2026  
+
+**Version:** 1.0.0  
 
 **License:** Apache 2.0  
 
@@ -2707,4 +2707,4 @@ Revocation (Steps R.1–R.4)
 
 <br>
 
-*End of Agent Delegation Chain Standard v1.0.0*
+*End Agent Delegation Chain Standard*
