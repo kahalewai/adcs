@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="404" height="520" alt="adcs-final" src="https://github.com/user-attachments/assets/e185115e-15e3-42e8-92ca-2527e17782b8" />
+<img width="364" height="468" alt="adcs-final1" src="https://github.com/user-attachments/assets/925ce417-56ca-4afe-b271-8e2dd710bca1" />
 
 <br>
 
