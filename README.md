@@ -109,7 +109,7 @@ Originator trust tier recorded: hardware_bound, host_mediated, or policy_derived
 
 For the complete formal specification, including definitions, requirements, and conformance criteria, see the full reference document:
 
-[ADCS-Standard-v1.0.0.md](ADCS-Standard-v1.0.0.md)
+[ADCS-Standard-v1.0.0.md](https://github.com/kahalewai/adcs/blob/main/spec/adcs_specification.md)
 
 **Status:** Public Draft for Community Review
 
