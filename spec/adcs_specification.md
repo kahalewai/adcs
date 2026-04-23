@@ -5,19 +5,19 @@
 **Date:** April 11, 2026  
 **License:** Apache 2.0  
 
----
+<br>
 
 *Begin Agent Delegation Chain Standard*
 
 ## Abstract
 
-The Agent Delegation Chain Standard (ADCS) defines a normative data model, verification algorithm, and cryptographic binding specification for the authorization of scope across multi-agent, multi-protocol AI workflows. ADCS establishes how permissions and constraints flow from an originating principal through a chain of agent delegations, and how each hop in that chain is verified to be monotonically restrictive — meaning scope can only narrow, never expand.
+The Agent Delegation Chain Standard (ADCS) defines a normative data model, verification algorithm, and cryptographic binding specification for the authorization of scope across multi-agent, multi-protocol AI workflows. ADCS establishes how permissions and constraints flow from an originating principal through a chain of agent delegations, and how each hop in that chain is verified to be monotonically restrictive, meaning scope can only narrow, never expand.
 
-ADCS addresses the authorization gap between session-level identity (OAuth 2.1) and session-level circuit breaking (ALS). It answers the question: **given that this agent session is permitted to run, is this specific agent authorized to perform this specific action within the scope that was delegated to it?**
+ADCS addresses the authorization gap between session-level identity (OAuth 2.1) and session-level circuit breaking (ALS). It answers the question: Given that this agent session is permitted to run, is this specific agent authorized to perform this specific action within the scope that was delegated to it?
 
 Principals are identified using Decentralized Identifiers (DIDs), anchoring public keys in externally resolvable identity documents and decoupling key rotation from chain structure. Chains support both linear delegation sequences and directed acyclic graph (DAG) workflows with defined merge semantics. Originator declarations may express multi-party quorum authorization for regulated-industry use cases. Conditional permissions, continuous revocation signals via CAEP, and just-in-time permission escalation are supported. ADCS additionally defines a normative audit event taxonomy aligned with the AI Logging Standard (AILS) so that ADCS audit events are natively interoperable with AILS-aware dashboards, SIEMs, and log pipelines; AILS conformance is declarable but not required.
 
----
+<br>
 
 ## Table of Contents
 
@@ -51,13 +51,13 @@ Principals are identified using Decentralized Identifiers (DIDs), anchoring publ
 - Appendix E — Reference SDK Architecture
 - Appendix F — Implementer Quick Reference
 
----
+<br>
 
 ## 1. Introduction
 
 ### 1.1 The Problem
 
-AI agent systems increasingly operate as networks of autonomous agents that delegate tasks to one another. A human authorizes an action. An orchestrating agent interprets that authorization and delegates subtasks to specialist agents. Those agents invoke tools. At each step, authorization scope must travel with the action — and at no step may scope expand beyond what was originally granted.
+AI agent systems increasingly operate as networks of autonomous agents that delegate tasks to one another. A human authorizes an action. An orchestrating agent interprets that authorization and delegates subtasks to specialist agents. Those agents invoke tools. At each step, authorization scope must travel with the action, and at no step may scope expand beyond what was originally granted.
 
 Current agent frameworks do not provide a standard mechanism for this. Each framework manages delegation ad hoc, typically through implicit context passing or application-layer trust assumptions. This creates a class of vulnerabilities:
 
@@ -67,40 +67,46 @@ Current agent frameworks do not provide a standard mechanism for this. Each fram
 - Cross-protocol delegations (from an A2A task to an MCP tool) carry no verifiable authorization record
 - Key rotation or agent decommissioning leaves orphaned credentials with residual access
 
+<br>
+
 ### 1.2 What ADCS Provides
 
 ADCS provides:
 
-- A **normative data structure** for expressing a delegation, including what was granted, what was withheld, and what constraints were added
-- A **chain structure** that links delegations from originator to terminal action, supporting both linear sequences and directed acyclic graph (DAG) workflows
-- A **verification algorithm** that any conformant implementation can execute to determine whether a chain is valid
-- A **monotonic restriction invariant** enforced cryptographically at each hop
-- A **capability token binding** that makes the chain the bearer artifact for tool authorization
-- A **constraint type registry** that establishes the shared vocabulary for what constraints mean
-- **DID-based principal identification** anchoring public keys in externally resolvable identity documents
-- **Multi-party originator quorum** for regulated-industry dual-control requirements
-- **Continuous revocation signals** via CAEP for real-time authorization change propagation
-- **Permission escalation protocol** for agents that discover mid-task they require additional scope
+- A normative data structure for expressing a delegation, including what was granted, what was withheld, and what constraints were added
+- A chain structure that links delegations from originator to terminal action, supporting both linear sequences and directed acyclic graph (DAG) workflows
+- A verification algorithm that any conformant implementation can execute to determine whether a chain is valid
+- A monotonic restriction invariant enforced cryptographically at each hop
+- A capability token binding that makes the chain the bearer artifact for tool authorization
+- A constraint type registry that establishes the shared vocabulary for what constraints mean
+- DID-based principal identification anchoring public keys in externally resolvable identity documents
+- Multi-party originator quorum for regulated-industry dual-control requirements
+- Continuous revocation signals via CAEP for real-time authorization change propagation
+- Permission escalation protocol for agents that discover mid-task they require additional scope
+
+<br>
 
 ### 1.3 What ADCS Does Not Provide
 
 ADCS does not specify:
 
-- Session-level circuit breaking — that is the responsibility of ALS
-- Tool integrity verification — that is the responsibility of the MCP Integrity Standard or equivalent
-- Policy evaluation engines (OPA, Cedar, etc.) — these MAY be used to evaluate chains but are not specified here
-- The semantic mapping between abstract constraints and concrete action parameters — this is an open problem documented in Section 16.5
-- Identity provisioning or authentication — ADCS relies on externally established identities anchored in DID documents
+- Session-level circuit breaking, that is the responsibility of circuit breaker technologies (ALS)
+- Tool integrity verification, that is the responsibility of the MCP Integrity Standard or equivalent
+- Policy evaluation engines (OPA, Cedar, etc.), these MAY be used to evaluate chains but are not specified here
+- The semantic mapping between abstract constraints and concrete action parameters, this is an open problem documented in Section 16.5
+- Identity provisioning or authentication, ADCS relies on externally established identities anchored in DID documents
+
+<br>
 
 > **⚠ WARNING — Constraint Enforcement Boundary:** ADCS carries constraints through a delegation chain and verifies that constraints are structurally present and structurally non-loosened at each hop. **ADCS does not enforce that a terminal action's parameters satisfy those constraints.** A chain declaring `budget.max = 1500` provides no monetary enforcement guarantee unless the governance layer implements semantic mapping for the target tool's parameters. Implementations MUST declare their constraint evaluation capability per Section 9.4. Deployers MUST NOT rely on ADCS alone as a semantic enforcement mechanism.
 
----
+<br>
 
 ## 2. Normative Language
 
 The key words **MUST**, **MUST NOT**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **MAY**, and **OPTIONAL** in this document are to be interpreted as described in RFC 2119.
 
----
+<br>
 
 ## 3. Scope
 
@@ -123,6 +129,8 @@ The key words **MUST**, **MUST NOT**, **SHALL**, **SHALL NOT**, **SHOULD**, **SH
 | Permission Escalation Protocol | Normative message format for mid-task permission requests |
 | Continuous Revocation Signals | CAEP integration for real-time revocation propagation |
 
+<br>
+
 ### 3.2 Explicitly Out of Scope
 
 | Capability | Where It Belongs |
@@ -135,7 +143,7 @@ The key words **MUST**, **MUST NOT**, **SHALL**, **SHALL NOT**, **SHOULD**, **SH
 | Agent runtime implementation | Implementer discretion within conformance requirements |
 | Cumulative constraint accounting across chains | Optional Constraint Accounting Service; see Section 9.5 |
 
----
+<br>
 
 ## 4. Core Concepts
 
@@ -143,11 +151,13 @@ The key words **MUST**, **MUST NOT**, **SHALL**, **SHALL NOT**, **SHOULD**, **SH
 
 A **principal** is any entity that can initiate or participate in a delegation. Principals include:
 
-- **Human originators** — the natural person whose intent initiates the chain
-- **System originators** — automated systems acting as the root of a chain on behalf of an organization
-- **Agents** — AI agent runtimes that receive delegated scope and may further delegate
+- **Human originators** - the natural person whose intent initiates the chain
+- **System originators** - automated systems acting as the root of a chain on behalf of an organization
+- **Agents** - AI agent runtimes that receive delegated scope and may further delegate
 
 Every principal in a chain MUST have a Decentralized Identifier (DID) that is resolvable to a DID document containing the principal's current public key(s). ADCS requires that principal identifiers be resolvable DIDs and that signing keys be discoverable via DID document resolution at verification time.
+
+<br>
 
 ### 4.2 Decentralized Identifiers (DIDs)
 
@@ -179,19 +189,25 @@ When inline keys are used, a `key_provenance` field MUST accompany `public_key`:
 | `registry_backed` | Key is registered in an organizational Agent Registry (Appendix C.5) but not published via DID document. Verifiers can confirm via registry lookup |
 | `self_declared` | Key is self-asserted by the principal. No external confirmation path exists. Appropriate for ephemeral agents in closed deployments |
 
-Verifiers MUST record the `key_provenance` value in audit logs. Governance layers MAY apply different trust policies based on `key_provenance` — for example, requiring `did_resolved` or `registry_backed` for `purchase` or `delete` permissions. There is no normative trust ordering between provenance values; trust policy is a deployment decision.
+Verifiers MUST record the `key_provenance` value in audit logs. Governance layers MAY apply different trust policies based on `key_provenance` for example, requiring `did_resolved` or `registry_backed` for `purchase` or `delete` permissions. There is no normative trust ordering between provenance values; trust policy is a deployment decision.
 
 Open interoperability deployments SHOULD use DID resolution and SHOULD prefer `did_resolved` provenance. Inline keys with any provenance value are a conformant operating mode, not a reduced-trust fallback.
+
+<br>
 
 ### 4.3 Delegation
 
 A **delegation** is a cryptographically signed record expressing that a delegator has granted a delegate a specific set of permissions, subject to a specific set of constraints, for a bounded time period. A delegation is the atomic unit of scope transfer.
 
-A delegation does not grant capabilities to the delegate. It records that the delegator — who already possesses certain capabilities — has chosen to share a subset of them with the delegate. The delegate cannot receive more than the delegator has.
+A delegation does not grant capabilities to the delegate. It records that the delegator, who already possesses certain capabilities, has chosen to share a subset of them with the delegate. The delegate cannot receive more than the delegator has.
+
+<br>
 
 ### 4.4 Delegation Chain
 
 A **delegation chain** is an ordered sequence of delegations from an originator declaration to the terminal action. In the standard linear case, every delegation references exactly one predecessor. In DAG workflows (Section 6.6), a delegation may reference multiple predecessors, subject to defined merge semantics. The chain is valid only if every hop satisfies the monotonic restriction invariant and every signature is verifiable.
+
+<br>
 
 ### 4.5 Monotonic Restriction Invariant
 
@@ -206,13 +222,19 @@ Scope may be narrowed in two ways:
 
 No hop may add permissions or loosen constraints. This invariant is enforced by the verification algorithm (Section 10) and is not dependent on the agents' own compliance.
 
+<br>
+
 ### 4.6 Effective Scope
 
 The **effective scope** at any point in a chain is the intersection of all permissions and the union of all constraints accumulated from the originator to that point. At a DAG merge point, effective permissions are the intersection of all merging branches' effective permissions, and effective constraints are the most restrictive value for each constraint type across all merging branches. Effective scope is computed by the verification algorithm, not declared by the delegate.
 
+<br>
+
 ### 4.7 Terminal Action
 
-The **terminal action** is the concrete operation that a chain authorizes — a `tools/call` in MCP, a `tasks/send` in A2A, or equivalent in any bound protocol. A chain exists to authorize exactly one terminal action context. It MUST NOT be reused across different action invocations.
+The **terminal action** is the concrete operation that a chain authorizes a `tools/call` in MCP, a `tasks/send` in A2A, or equivalent in any bound protocol. A chain exists to authorize exactly one terminal action context. It MUST NOT be reused across different action invocations.
+
+<br>
 
 ### 4.8 Originator Trust Tier
 
@@ -226,7 +248,7 @@ The **originator trust tier** expresses the degree to which the originator decla
 
 Governance systems SHOULD apply different trust weights based on originator trust tier. A `hardware_bound` declaration provides stronger assurance of human authorization than a `host_mediated` declaration; both are stronger than `policy_derived`. See Section 8.3.
 
----
+<br>
 
 ## 5. Delegation Object
 
@@ -276,6 +298,8 @@ Each delegation in a chain SHALL conform to the following structure:
 }
 ```
 
+<br>
+
 ### 5.2 Field Definitions
 
 | Field | Required | Description |
@@ -305,6 +329,8 @@ Each delegation in a chain SHALL conform to the following structure:
 | `intent_reference` | REQUIRED | The `delegation_id` of the originator declaration at the root of this chain |
 | `signature` | REQUIRED | Base64url-encoded signature over the canonical delegation body, signed by the delegator's key as resolved from `delegator.did` |
 
+<br>
+
 ### 5.3 Permission Strings
 
 Permission strings SHALL use reverse-domain notation to avoid collisions:
@@ -326,6 +352,8 @@ delegate
 
 A core permission vocabulary is defined in Appendix A. Vendors MAY define additional permissions using reverse-domain notation. Implementations MUST treat unrecognized permission strings as opaque identifiers and MUST still enforce the subset invariant on them.
 
+<br>
+
 ### 5.4 Canonical Delegation Body
 
 The canonical body for signature computation is the JSON object containing all fields except `signature`, serialized using JSON Canonicalization Scheme (JCS) as defined in RFC 8785. Specifically:
@@ -337,6 +365,8 @@ The canonical body for signature computation is the JSON object containing all f
 - Number serialization per RFC 8785 §3.2.2.3 (no trailing zeros, no positive sign on exponent)
 
 Implementations MUST produce and verify signatures over this canonical form. Implementations MUST NOT use ad-hoc canonicalization; a conformant JCS implementation is REQUIRED.
+
+<br>
 
 ### 5.5 Conditional Permissions
 
@@ -369,6 +399,8 @@ A **conditional permission** is a permission that is granted to a delegate but m
 
 Conditional permissions MUST be tracked separately in `effective_conditional_permissions` throughout verification. Governance systems receiving a capability token with `effective_conditional_permissions` are responsible for enforcing the conditions before permitting the action.
 
+<br>
+
 ### 5.6 Condition Satisfaction Record
 
 When a conditional permission's condition is satisfied (e.g., a human approves the action), the governance layer MUST produce a **condition satisfaction record** providing cryptographic evidence of the approval.
@@ -399,7 +431,7 @@ When a conditional permission's condition is satisfied (e.g., a human approves t
 
 **Audit requirement:** Condition satisfaction records MUST be logged alongside the chain verification event and retained for the audit retention period (Section 22.6).
 
----
+<br>
 
 ## 6. Delegation Chain Structure
 
@@ -428,6 +460,8 @@ When a conditional permission's condition is satisfied (e.g., a human approves t
 }
 ```
 
+<br>
+
 ### 6.2 Field Definitions
 
 | Field | Required | Description |
@@ -445,13 +479,19 @@ When a conditional permission's condition is satisfied (e.g., a human approves t
 | `revocation_service` | REQUIRED | URI of the revocation service metadata endpoint for the issuing organization. Gives verifiers a deterministic discovery path for revocation lists and CAEP endpoints. See Section 14.6 |
 | `context_snapshot` | OPTIONAL | Observational snapshot of the runtime context at chain construction time. Not subject to verification. See Section 6.5 |
 
+<br>
+
 ### 6.3 Chain Depth
 
 A chain MUST contain at least one delegation. Chains exceeding five delegations SHOULD use chain compaction (Section 11). Chains MUST NOT exceed 20 delegations without compaction.
 
+<br>
+
 ### 6.4 Chain Uniqueness
 
 Each chain instance is bound to exactly one terminal action via `terminal_action.action_id`. A chain MUST NOT be presented for a different action than the one declared in `terminal_action`. Implementations MUST verify this binding before accepting a chain.
+
+<br>
 
 ### 6.5 Context Snapshot
 
@@ -463,6 +503,8 @@ The `context_snapshot` field is an OPTIONAL observational record of the runtime 
 | `preceding_action_count` | OPTIONAL | Number of actions already executed within the current session |
 | `preceding_action_summary` | OPTIONAL | Human-readable or structured summary of preceding actions |
 | `additional_context` | OPTIONAL | Free-form key-value object for deployment-specific data |
+
+<br>
 
 ### 6.6 DAG Workflow Chains
 
@@ -479,13 +521,15 @@ The monotonic restriction invariant holds at merge points: the merged effective 
 
 **DAG conformance** is an OPTIONAL capability at Level 3 (see Section 17). Implementations that do not support DAG chains MUST reject chains containing `parent_delegation_ids` with `DAG_NOT_SUPPORTED`.
 
----
+<br>
 
 ## 7. Capability Token Binding
 
 ### 7.1 Purpose
 
 A capability token is the bearer artifact that carries the delegation chain to the point of action invocation. The token is short-lived, transport-bound, and references the chain that authorizes the action.
+
+<br>
 
 ### 7.2 Token Structure
 
@@ -533,6 +577,8 @@ Capability tokens SHALL be JSON Web Tokens (JWT) conforming to RFC 7519:
 }
 ```
 
+<br>
+
 ### 7.3 Field Requirements
 
 | Claim | Required | Description |
@@ -554,6 +600,8 @@ Capability tokens SHALL be JSON Web Tokens (JWT) conforming to RFC 7519:
 | `condition_satisfactions` | OPTIONAL | Array of condition satisfaction records (Section 5.6). Empty array if no conditions have been satisfied. Verifiers MUST verify each record's signature |
 | `cnf` | REQUIRED | Proof-of-possession claim. MUST include `x5t#S256` or `jkt`. MUST NOT be absent |
 
+<br>
+
 ### 7.4 Token Lifetime
 
 ```
@@ -562,9 +610,13 @@ exp ≤ min(chain.delegations[-1].expires_at, issuer_max_ttl)
 
 Implementations SHOULD issue tokens with a TTL of 15 minutes or less. Tokens with a TTL exceeding 1 hour MUST NOT be issued.
 
+<br>
+
 ### 7.5 Proof-of-Possession Requirement
 
 Every capability token MUST include a `cnf` claim binding the token to the holder's transport credential. A token without a `cnf` claim is non-conformant and MUST be rejected. The verifier MUST confirm that the TLS client certificate thumbprint (for mTLS) or the DPoP proof (for DPoP) matches the `cnf` claim.
+
+<br>
 
 ### 7.6 Macaroon-Based Tokens
 
@@ -577,6 +629,8 @@ Implementations MAY use Macaroons in place of JWTs, provided:
 
 JWT is the required baseline format. Implementations supporting Macaroon tokens MUST also support JWT.
 
+<br>
+
 ### 7.7 Token-Only Presentation Mode (Privacy-Preserving)
 
 To protect deployment topology and organizational trust hierarchy from disclosure to third-party tool servers, implementations SHOULD support a **token-only presentation mode**:
@@ -587,13 +641,15 @@ To protect deployment topology and organizational trust hierarchy from disclosur
 
 When operating in token-only mode, the tool server MUST trust the token issuer's governance layer for chain verification. The full chain MUST remain available for audit retrieval via the `chain_id`. This mode is OPTIONAL but RECOMMENDED for all third-party tool integrations.
 
----
+<br>
 
 ## 8. Originator Declaration
 
 ### 8.1 Purpose
 
 The originator declaration is the root of every delegation chain. It declares the human or system intent that the chain serves, the permissions the originator is granting, and the constraints that apply from the root.
+
+<br>
 
 ### 8.2 Structure
 
@@ -647,6 +703,8 @@ The originator declaration is the root of every delegation chain. It declares th
 }
 ```
 
+<br>
+
 ### 8.3 Field Definitions
 
 | Field | Required | Description |
@@ -671,11 +729,15 @@ The originator declaration is the root of every delegation chain. It declares th
 | `context` | OPTIONAL | Additional structured context. MUST include `bootstrapping_method`. MUST NOT contain permissions or constraints |
 | `signature` | REQUIRED | Signature over the canonical originator declaration body |
 
+<br>
+
 ### 8.4 Human vs. System Originators
 
 A **human originator** is a natural person whose identity is established through an external authentication system. The `originator.did` SHOULD resolve to a DID document whose controller is the human's authenticated identity.
 
 A **system originator** is an automated system acting as the root principal for agent workflows triggered by scheduled jobs, event-driven processes, or API calls. System originators MUST have DIDs resolvable via `did:web` or equivalent organizational DID infrastructure.
+
+<br>
 
 ### 8.5 Multi-Party Originator Quorum
 
@@ -710,9 +772,13 @@ For regulated-industry use cases requiring dual control or broader multi-party a
 
 When `originator_quorum` is present, the `originator_trust_tier` MUST be `hardware_bound` or `host_mediated` for all signing principals. A quorum originator declaration with `policy_derived` tier for any signer MUST be treated as `policy_derived` for the entire declaration.
 
+<br>
+
 ### 8.6 Intent Preservation
 
 The `intent` field MUST be preserved and accessible throughout the chain. The intent field MUST NOT be modified after signing.
+
+<br>
 
 ### 8.7 Originator Declaration Bootstrapping (Normative)
 
@@ -745,6 +811,8 @@ Regardless of method:
 - The `intent` field MUST accurately reflect the scope being authorized
 - The bootstrapping method MUST be recorded in `context.bootstrapping_method`
 
+<br>
+
 ### 8.8 Structured Intent
 
 The `intent_structured` field provides machine-readable classification of the originator's intent, enabling programmatic intent-action consistency checks by governance layers.
@@ -767,13 +835,15 @@ The `intent_structured` field provides machine-readable classification of the or
 
 `intent_structured` MUST be preserved and accessible throughout the chain alongside `intent`. When present in the originator declaration, it MUST NOT be modified after signing.
 
----
+<br>
 
 ## 9. Constraint Type Registry
 
 ### 9.1 Purpose
 
 Constraints are only useful if all parties share a common vocabulary for what a constraint means and how to determine whether a proposed action violates it.
+
+<br>
 
 ### 9.2 Core Constraint Types
 
@@ -794,6 +864,8 @@ All conformant implementations MUST support evaluation of these types.
 
 > **⚠ WARNING — Per-Chain Limit Only:** The `budget` constraint limits spending authorization within a single chain. An originator issuing multiple chains can authorize cumulative spending exceeding any individual chain's `budget.max`. Deployments with financial accountability requirements MUST implement a Constraint Accounting Service (Section 9.5) or equivalent external budget tracking. ADCS alone does not enforce cumulative budget limits.
 
+<br>
+
 #### 9.2.2 `data_scope`
 
 ```json
@@ -804,6 +876,8 @@ All conformant implementations MUST support evaluation of these types.
 
 **Restriction rule:** A hop MAY change to a more restrictive value. MUST NOT change to a less restrictive value.
 
+<br>
+
 #### 9.2.3 `time_range`
 
 ```json
@@ -811,6 +885,8 @@ All conformant implementations MUST support evaluation of these types.
 ```
 
 **Restriction rule:** A hop MAY narrow the range. MUST NOT widen it.
+
+<br>
 
 #### 9.2.4 `network_scope`
 
@@ -823,6 +899,8 @@ All conformant implementations MUST support evaluation of these types.
 
 **Restriction rule:** A hop MAY remove from `allowed_hosts` or add to `denied_hosts`. MUST NOT add to `allowed_hosts` or remove from `denied_hosts`.
 
+<br>
+
 #### 9.2.5 `resource_path`
 
 ```json
@@ -834,6 +912,8 @@ All conformant implementations MUST support evaluation of these types.
 
 **Restriction rule:** A hop MAY narrow `allowed` paths or expand `denied` paths. MUST NOT add new allowed paths or remove denied paths.
 
+<br>
+
 #### 9.2.6 `max_results`
 
 ```json
@@ -842,6 +922,8 @@ All conformant implementations MUST support evaluation of these types.
 
 **Restriction rule:** A hop MAY decrease. MUST NOT increase.
 
+<br>
+
 #### 9.2.7 `action_count`
 
 ```json
@@ -849,6 +931,8 @@ All conformant implementations MUST support evaluation of these types.
 ```
 
 **Restriction rule:** A hop MAY decrease `max` or decrease `window`. MUST NOT increase either.
+
+<br>
 
 #### 9.2.8 `max_delegation_depth`
 
@@ -862,9 +946,13 @@ Constrains how many additional delegation hops may be created below the hop at w
 
 The verification algorithm MUST track the current delegation depth relative to where `max_delegation_depth` was set and fail with `DELEGATION_DEPTH_EXCEEDED` if a delegation is attempted beyond the allowed depth.
 
+<br>
+
 ### 9.3 Vendor Constraint Types
 
 Vendors MAY define additional constraint types using reverse-domain notation. Implementations encountering an unrecognized constraint type MUST treat it as opaque and MUST deny if a hop modifies it with `UNKNOWN_CONSTRAINT_MODIFIED`, unless a trusted policy engine that understands the type has verified the modification.
+
+<br>
 
 ### 9.4 Constraint Evaluation Capability Declaration
 
@@ -885,6 +973,8 @@ Implementations MUST declare their constraint evaluation capability in a machine
 | `semantic` | Implementation evaluates whether action parameters satisfy constraint values using the declared mapping method |
 
 Implementations that declare `structural_only` MUST NOT represent themselves as enforcing semantic constraints. This capability declaration MUST be included in any conformance documentation and SHOULD be accessible via the deployment's governance API.
+
+<br>
 
 ### 9.5 Cumulative Constraint Accounting
 
@@ -948,7 +1038,7 @@ Releases a reservation when a chain is abandoned before finalization.
 
 Verifiers that enforce cumulative constraints SHOULD confirm the reservation is valid and not expired before accepting the chain. The CAS is an OPTIONAL deployment component; implementations that do not deploy a CAS MUST still support the `budget` constraint type for per-chain structural verification.
 
----
+<br>
 
 ## 10. Verification Algorithm
 
@@ -958,12 +1048,14 @@ The verification algorithm is the normative procedure by which any conformant im
 
 Verification has four phases:
 
-1. **Structural verification** — chain is well-formed and internally consistent
-2. **Cryptographic verification** — all signatures are valid
-3. **Temporal verification** — all TTLs are valid at the time of verification
-4. **Monotonic restriction verification** — each hop narrows or preserves scope
+1. **Structural verification** - chain is well-formed and internally consistent
+2. **Cryptographic verification** - all signatures are valid
+3. **Temporal verification** - all TTLs are valid at the time of verification
+4. **Monotonic restriction verification** - each hop narrows or preserves scope
 
 `context_snapshot`, if present, is not subject to any verification phase.
+
+<br>
 
 ### 10.2 Inputs
 
@@ -974,6 +1066,8 @@ current_time:           The verifier's current time (ISO 8601)
 terminal_action:        The action being authorized (protocol, operation, target, action_id)
 clock_skew_tolerance:   ISO 8601 duration tolerance for temporal checks (default: PT60S)
 ```
+
+<br>
 
 ### 10.3 Phase 1 — Structural Verification
 
@@ -1043,6 +1137,8 @@ clock_skew_tolerance:   ISO 8601 duration tolerance for temporal checks (default
      → FAIL: MISSING_REVOCATION_SERVICE
 ```
 
+<br>
+
 ### 10.4 Phase 2 — Cryptographic Verification
 
 ```
@@ -1088,6 +1184,8 @@ clock_skew_tolerance:   ISO 8601 duration tolerance for temporal checks (default
      Record token.jti as seen
 ```
 
+<br>
+
 ### 10.5 Phase 3 — Temporal Verification
 
 Clock skew tolerance of `clock_skew_tolerance` (default PT60S) is applied to all expiry comparisons. The tolerance window is additive: a delegation with `expires_at` in the past by less than `clock_skew_tolerance` MAY be accepted. Implementations SHOULD log when a chain passes only within the tolerance window.
@@ -1125,6 +1223,8 @@ Clock skew tolerance of `clock_skew_tolerance` (default PT60S) is applied to all
 3.8  token.exp MUST be ≤ chain.delegations[-1].expires_at
      → FAIL: TOKEN_TTL_EXCEEDS_CHAIN
 ```
+
+<br>
 
 ### 10.6 Phase 4 — Monotonic Restriction Verification
 
@@ -1214,6 +1314,8 @@ After final delegation:
        → FAIL: TOKEN_CONSTRAINTS_MISMATCH
 ```
 
+<br>
+
 ### 10.7 Revocation Check
 
 After Phase 4, perform revocation checks using the revocation service discovered via `chain.revocation_service`:
@@ -1231,6 +1333,8 @@ R.3  For every delegation d in chain.delegations:
 R.4  token.jti MUST NOT appear in the token revocation list.
      → FAIL: TOKEN_REVOKED
 ```
+
+<br>
 
 ### 10.8 Verification Result
 
@@ -1261,9 +1365,13 @@ A chain that fails any step SHALL produce:
 }
 ```
 
+<br>
+
 ### 10.9 Fail-Closed Requirement
 
 Implementations MUST treat any verification failure as a denial of the terminal action. There is no partial validity. Implementations MUST NOT fall back to broader authorization on chain failure.
+
+<br>
 
 ### 10.10 Permission Escalation Protocol
 
@@ -1293,7 +1401,7 @@ If denied, the governance layer returns a denial with a reason code. The agent M
 
 **Constraints:** An escalation MUST NOT request a permission not present in the originator declaration's `permissions_granted` or `permissions_conditional`. Governance layers MUST reject escalations that would expand scope beyond the originator's root grant.
 
----
+<br>
 
 ## 11. Chain Compaction
 
@@ -1301,9 +1409,13 @@ If denied, the governance layer returns a denial with a reason code. The agent M
 
 Delegation chains in deep multi-agent hierarchies may accumulate many hops. Chain compaction allows intermediate hops to be summarized while preserving auditability.
 
+<br>
+
 ### 11.2 Compaction Threshold
 
 Chains SHOULD be compacted when depth exceeds five delegations. Chains exceeding 20 delegations MUST use compaction or MUST NOT be created.
+
+<br>
 
 ### 11.3 Compacted Chain Object
 
@@ -1327,6 +1439,8 @@ Chains SHOULD be compacted when depth exceeds five delegations. Chains exceeding
 }
 ```
 
+<br>
+
 ### 11.4 Field Definitions
 
 | Field | Required | Description |
@@ -1343,19 +1457,23 @@ Chains SHOULD be compacted when depth exceeds five delegations. Chains exceeding
 | `revocation_service` | REQUIRED | Same as in full chain object |
 | `compaction_signature` | REQUIRED | Signature over canonical compacted chain body, signed by the compacting party |
 
+<br>
+
 ### 11.5 Compaction Verification
 
 Verification of a compacted chain executes Phases 1–3 adapted for the compacted structure, plus a compaction signature verification. Phase 4 is verified for first and last delegation against the originator declaration; `effective_permissions` and `effective_constraints` are trusted subject to the compaction signature.
 
 Implementations performing high-assurance verification SHOULD retrieve the full chain from `full_chain_locator` and execute the complete algorithm.
 
----
+<br>
 
 ## 12. Cross-Protocol Chains
 
 ### 12.1 Protocol-Agnosticism
 
 A delegation chain is protocol-agnostic. Each delegation records which protocol was used for that hop, but chain structure and verification are identical regardless of protocol.
+
+<br>
 
 ### 12.2 Registered Protocol Identifiers
 
@@ -1367,6 +1485,8 @@ A delegation chain is protocol-agnostic. Each delegation records which protocol 
 | `direct` | Direct invocation (no protocol intermediary) |
 | `http` | Generic HTTP |
 
+<br>
+
 ### 12.3 Protocol Binding Requirements
 
 A protocol binding specification MUST specify:
@@ -1375,6 +1495,8 @@ A protocol binding specification MUST specify:
 2. Which protocol operations are governed
 3. How `terminal_action.action_id` is derived from the protocol message
 4. How verification failures are communicated in the protocol's error format
+
+<br>
 
 ### 12.4 MCP Binding
 
@@ -1438,6 +1560,8 @@ For MCP governed operations (`tools/call`, `resources/read`, `resources/subscrib
 }
 ```
 
+<br>
+
 ### 12.5 A2A Binding
 
 For A2A governed operations (`tasks/send`, `messages/send`):
@@ -1485,6 +1609,8 @@ For A2A governed operations (`tasks/send`, `messages/send`):
 }
 ```
 
+<br>
+
 ### 12.6 ACP Binding
 
 For ACP (Agent Communication Protocol, IBM/Linux Foundation) governed operations:
@@ -1509,6 +1635,8 @@ For ACP (Agent Communication Protocol, IBM/Linux Foundation) governed operations
 }
 ```
 
+<br>
+
 ### 12.7 HTTP Generic Binding
 
 For any HTTP-based tool invocation not covered by a more specific binding:
@@ -1528,7 +1656,7 @@ For any HTTP-based tool invocation not covered by a more specific binding:
 }
 ```
 
----
+<br>
 
 ## 13. Cryptographic Requirements
 
@@ -1544,6 +1672,8 @@ For any HTTP-based tool invocation not covered by a more specific binding:
 
 All signing algorithms MUST be declared in the JWK `alg` field. Implementations MUST reject signatures produced by algorithms not in this table.
 
+<br>
+
 ### 13.2 Key Requirements
 
 - All keys MUST be at least 256 bits in effective security strength
@@ -1553,11 +1683,15 @@ All signing algorithms MUST be declared in the JWK `alg` field. Implementations 
 - Keys MUST be rotated at intervals not exceeding 90 days
 - Compromised keys MUST be revoked and revocation MUST be published to the trust anchor
 
+<br>
+
 ### 13.3 Key Distribution via DID
 
 Public keys for chain verification are resolved via DID document lookup at verification time. The `delegator.did` and `originator.did` fields are the authoritative key references. Implementations MUST resolve the current DID document at verification time and use the key designated for signing/verification in that document.
 
 Implementations MAY cache DID document resolutions with a TTL not exceeding 1 hour for performance. Cached resolutions MUST be invalidated upon revocation notification.
+
+<br>
 
 ### 13.4 Hash Requirements
 
@@ -1565,9 +1699,13 @@ Implementations MAY cache DID document resolutions with a TTL not exceeding 1 ho
 - Token binding thumbprints MUST use SHA-256 (per RFC 8705)
 - Implementations MAY support SHA-384 or SHA-512 for chain digests; if used, the algorithm MUST be declared alongside the digest
 
+<br>
+
 ### 13.5 Canonical Serialization
 
 All signatures and digests are computed over JSON Canonicalization Scheme (JCS) per RFC 8785 (Section 5.4). Implementations MUST use a conformant JCS library and MUST NOT accept signatures computed over non-canonical forms.
+
+<br>
 
 ### 13.6 Key Compromise Response
 
@@ -1583,7 +1721,7 @@ When a signing key is suspected or confirmed compromised, the following actions 
 
 Implementations MUST provide an emergency revocation endpoint that accepts authenticated key compromise reports and initiates this response automatically where feasible. The emergency endpoint URI SHOULD be declared in the revocation service metadata (Section 14.6).
 
----
+<br>
 
 ## 14. Revocation
 
@@ -1595,6 +1733,8 @@ A delegation MAY be revoked before its TTL expires. Revocation is appropriate wh
 - The delegation was issued in error
 - The session is terminated by an external governance signal
 - A signing key is compromised (Section 13.6)
+
+<br>
 
 ### 14.2 Revocation Methods
 
@@ -1621,6 +1761,8 @@ Implementations MUST support at least one of the following:
 
 **Method 2 — Push Revocation:** The revocation authority pushes a signed revocation notice to registered verifiers. Format is a single entry from the revocation list, signed individually.
 
+<br>
+
 ### 14.3 Originator Declaration Revocation
 
 Originator declarations are subject to revocation in the same manner as delegation objects. When an originator declaration is revoked:
@@ -1628,6 +1770,8 @@ Originator declarations are subject to revocation in the same manner as delegati
 - All delegation chains whose `originator_declaration.delegation_id` matches the revoked ID are immediately invalid
 - Verifiers MUST check the originator declaration's `delegation_id` against the revocation list (Step R.2 of Section 10.7)
 - Error code `ORIGINATOR_REVOKED` MUST be returned
+
+<br>
 
 ### 14.4 Token Revocation
 
@@ -1639,9 +1783,13 @@ Capability tokens MUST be revoked when:
 
 Token revocation uses `token.jti` as identifier and follows the same methods as delegation revocation.
 
+<br>
+
 ### 14.5 Revocation Check Timing
 
 Implementations MUST check revocation at verification time. A chain passing all algorithm phases but referencing a revoked delegation MUST be rejected per Section 10.7.
+
+<br>
 
 ### 14.6 Continuous Revocation Signals (CAEP)
 
@@ -1662,6 +1810,8 @@ Implementations that support CAEP MUST:
 - Subscribe to the CAEP endpoint declared in the revocation service metadata for all active chain sessions
 - Upon receiving a triggering event, immediately invalidate affected capability tokens and reject any in-flight verifications for the affected chain
 - Log the CAEP event alongside the revocation action
+
+<br>
 
 ### 14.7 Revocation Service Metadata
 
@@ -1693,7 +1843,7 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `caep_endpoint` | OPTIONAL | CAEP event stream endpoint; REQUIRED if implementation declares CAEP support |
 | `signature` | REQUIRED | Signature over canonical metadata body |
 
----
+<br>
 
 ## 15. Error Codes
 
@@ -1717,6 +1867,8 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `MISSING_REVOCATION_SERVICE` | `chain.revocation_service` is absent or empty |
 | `DAG_NOT_SUPPORTED` | Chain contains DAG delegation structure but implementation does not support DAG |
 
+<br>
+
 ### 15.2 Cryptographic Errors
 
 | Code | Description |
@@ -1730,6 +1882,8 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `DID_RESOLUTION_FAILURE` | A principal's DID could not be resolved to a valid DID document |
 | `QUORUM_INSUFFICIENT` | Originator quorum requires more valid signatures than are present |
 
+<br>
+
 ### 15.3 Temporal Errors
 
 | Code | Description |
@@ -1742,6 +1896,8 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `TOKEN_EXPIRED` | Token has expired |
 | `TOKEN_NOT_YET_VALID` | Token `nbf` is in the future |
 | `TOKEN_TTL_EXCEEDS_CHAIN` | Token `exp` exceeds chain's terminal delegation expiration |
+
+<br>
 
 ### 15.4 Monotonic Restriction Errors
 
@@ -1758,6 +1914,8 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `DELEGATION_DEPTH_EXCEEDED` | `max_delegation_depth` constraint has been exceeded |
 | `DAG_MERGE_VIOLATION` | A DAG merge delegation grants permissions not present in the intersection of all parent branches |
 
+<br>
+
 ### 15.5 Revocation Errors
 
 | Code | Description |
@@ -1766,6 +1924,8 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `DELEGATION_REVOKED` | A delegation in the chain has been revoked |
 | `TOKEN_REVOKED` | The capability token has been revoked |
 
+<br>
+
 ### 15.6 Compaction Errors
 
 | Code | Description |
@@ -1773,7 +1933,7 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `INVALID_COMPACTION_SIGNATURE` | Compacted chain's compaction signature verification failed |
 | `INTERMEDIATE_DIGEST_UNAVAILABLE` | Full chain could not be retrieved for high-assurance verification |
 
----
+<br>
 
 ## 16. Security Considerations
 
@@ -1783,17 +1943,25 @@ The monotonic restriction invariant (Section 4.5) is the primary defense against
 
 Implementers MUST ensure that the verification algorithm runs outside the agent runtime, in a component the agent cannot write to.
 
+<br>
+
 ### 16.2 Chain Forgery
 
 Chain forgery requires either a principal's private signing key or the ability to bypass both DID resolution and signature verification. Key security (Section 13.2) is the primary mitigation; DID-based key resolution prevents forged keys from being accepted as legitimate.
+
+<br>
 
 ### 16.3 Chain Replay
 
 The `terminal_action.action_id` binding prevents chain replay across different invocations. Token replay is prevented by nonce tracking (Step 2.5). Implementations MUST maintain a seen-tokens record for the session lifetime.
 
+<br>
+
 ### 16.4 Confused Deputy via Scope Misrepresentation
 
 The verification algorithm recomputes effective scope from first principles and compares against the token's declared values (Steps 4.4–4.5). Implementations MUST NOT skip this recomputation.
+
+<br>
 
 ### 16.5 Semantic Constraint Mapping
 
@@ -1817,13 +1985,19 @@ ADCS verifies structural constraint presence and non-loosening. It does not eval
 
 Implementations MUST declare their approach per Section 9.4. Implementations using `structural_only` MUST NOT represent themselves as enforcing semantic constraints.
 
+<br>
+
 ### 16.6 Long Chain Opacity
 
 Deep delegation hierarchies can obscure terminal scope. Implementations SHOULD log the full chain at every verification event to preserve forensic auditability.
 
+<br>
+
 ### 16.7 Cross-Protocol Trust Boundaries
 
 When a chain crosses protocol boundaries, each delegation's signature is verified against the signing key resolved from that delegation's `delegator.did`. The DID document is the per-hop trust anchor. Implementations MUST NOT use a global trust store as a shortcut for cross-protocol chain verification.
+
+<br>
 
 ### 16.8 Prompt Injection and Adversarial Chain Construction
 
@@ -1841,6 +2015,8 @@ Mitigations that governance layers SHOULD implement:
 
 ADCS is not a substitute for a threat model that includes adversarial LLM inputs. It is a layer in a defense-in-depth architecture.
 
+<br>
+
 ### 16.9 Chain Injection and Truncation
 
 **Chain injection** — replacing the originator declaration and initial delegations with a forged prefix — requires forging valid signatures under the claimed delegators' DIDs. DID-based key resolution defeats this: a forged chain cannot produce a signature that verifies against the real delegator's DID document unless the attacker controls that DID.
@@ -1848,6 +2024,8 @@ ADCS is not a substitute for a threat model that includes adversarial LLM inputs
 **Chain truncation** — presenting a subchain starting from an intermediate hop — is defeated by the `intent_reference` requirement: every delegation must reference the originator declaration's `delegation_id`, and the originator declaration must be present. Step 1.2 (MISSING_ORIGINATOR) and Step 1.11 (INTENT_REFERENCE_MISMATCH) provide the verification.
 
 Implementers SHOULD be aware that both attacks are structurally prevented by the algorithm and should test for them explicitly in their conformance test suites.
+
+<br>
 
 ### 16.10 Delegation Chain Privacy
 
@@ -1860,7 +2038,7 @@ A full delegation chain reveals:
 
 Third-party tool servers receiving full chains gain detailed intelligence about the calling system's architecture. Implementations SHOULD use token-only presentation mode (Section 7.7) for all third-party tool invocations. The full chain MUST remain available for audit retrieval but SHOULD NOT be transmitted beyond organizational trust boundaries as a default.
 
----
+<br>
 
 ## 17. Conformance
 
@@ -1901,6 +2079,8 @@ Level 2 plus:
 - Multi-party originator quorum support (Section 8.5)
 - Permission escalation protocol (Section 10.10)
 
+<br>
+
 ### 17.2 Conformance Test Suite
 
 A conformance test suite is maintained alongside this standard. Implementations MUST pass the test suite for their declared conformance level. The test suite is normative. Test vectors are provided in Appendix D.
@@ -1923,6 +2103,8 @@ Test categories:
 - Error codes: all failures produce correct error codes
 - Cross-protocol: chains spanning registered protocols verified correctly
 
+<br>
+
 ### 17.3 AILS Conformance (OPTIONAL capability)
 
 Implementations at any ADCS Conformance Level (1, 2, or 3) MAY additionally declare AILS (AI Logging Standard) conformance per §23.7. Declaring AILS conformance is OPTIONAL. It is not required for any ADCS Conformance Level and does not affect ADCS Level 1/2/3 satisfaction. Implementations that do not declare AILS conformance remain fully conformant ADCS implementations at their declared level.
@@ -1937,7 +2119,7 @@ Cross-standard conformance claims follow the format prescribed by AILS §28.5.2.
 
 An implementation that emits a subset of the §23.2 events in AILS envelope form but not all of them MUST NOT claim full AILS conformance; partial conformance MAY be claimed per AILS §28.7.1 with explicit enumeration of the event types satisfied.
 
----
+<br>
 
 ## 18. Relationship to Other Standards
 
@@ -1947,17 +2129,25 @@ ALS provides session-level circuit breaking — whether an agent session may con
 
 A valid ADCS chain does not override an ALS halt. An ALS NORMAL state does not substitute for ADCS chain verification.
 
+<br>
+
 ### 18.2 OAuth 2.1
 
 OAuth 2.1 establishes identity and initial authorization at session start. ADCS operates after OAuth authorization — tracking how that authorization was subdivided and delegated across agent hops. OAuth tokens MAY be referenced in the originator declaration `context` field. ADCS may be used with other identity systems; it does not depend on OAuth.
+
+<br>
 
 ### 18.3 MCP Integrity Standard
 
 The MCP Integrity Standard establishes that a tool artifact is what it claims to be. ADCS establishes that the agent invoking the tool has the scope to do so. Publisher-declared constraint mappings (Section 16.5) provide the bridge between these two standards.
 
+<br>
+
 ### 18.4 CAEP (Continuous Access Evaluation Protocol)
 
 CAEP (OpenID Foundation) defines an event stream for pushing session-change signals to relying parties in real time. ADCS integrates with CAEP for continuous revocation propagation during active chain execution (Section 14.6). CAEP is the mechanism by which changes in authorization state — compromise events, session revocation, claims changes — reach active ADCS verifiers without polling latency.
+
+<br>
 
 ### 18.5 Related Work and Engineering Precedents
 
@@ -1971,6 +2161,8 @@ CAEP (OpenID Foundation) defines an event stream for pushing session-change sign
 
 **IETF Identity Chaining (draft-ietf-oauth-identity-chaining):** Cross-domain OAuth identity preservation. Addresses identity propagation across organizational boundaries; ADCS addresses permission restriction within a task chain. In cross-organization deployments, Identity Chaining and ADCS serve different layers of the same trust problem.
 
+<br>
+
 ### 18.6 AILS (AI Logging Standard)
 
 AILS (AI Logging Standard) defines a canonical event envelope, event taxonomy, graduated integrity model, provenance classification, redaction framework, and retention tiers for AI system telemetry and audit records. It is the intended reference audit event format for ADCS.
@@ -1981,7 +2173,7 @@ ADCS does not require AILS adoption. An ADCS implementation that emits audit rec
 
 AILS v1.0.0 does not currently list ADCS in its own cross-standard event matrix (AILS §29, Appendix E). A complementary AILS update proposing an §29.12 subsection and an Appendix E.10 entry mirroring the mapping defined in §23.2 of this standard is planned for a future AILS revision.
 
----
+<br>
 
 ## 19. Versioning
 
@@ -1993,7 +2185,7 @@ This standard uses semantic versioning: `MAJOR.MINOR.PATCH`.
 
 Verifiers MUST reject objects with a MAJOR version they do not support. Verifiers SHOULD accept objects with a higher MINOR version by treating unrecognized optional fields as absent.
 
----
+<br>
 
 ## 20. Glossary
 
@@ -2031,7 +2223,7 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 | **Terminal Action** | The specific protocol operation that a delegation chain authorizes |
 | **Token-Only Mode** | A capability token presentation mode in which only the token, not the full chain, is transmitted to the terminal tool server |
 
----
+<br>
 
 ## 21. References
 
@@ -2058,7 +2250,7 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 - **draft-ietf-oauth-identity-chaining** — Identity Chaining Across Trust Domains. IETF OAuth WG (active draft)
 - **ACP** — Agent Communication Protocol. IBM / Linux Foundation AI & Data, 2024
 
----
+<br>
 
 ## 22. Deployment Topologies
 
@@ -2079,6 +2271,8 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 
 **Conformance target:** Level 3. CAEP support RECOMMENDED.
 
+<br>
+
 ### 22.2 Federated Multi-Organization
 
 **Scenario:** Two or more organizations each operating their own agent infrastructure, with chains crossing organizational boundaries (e.g., a customer's orchestrating agent delegating to a vendor's specialist agent).
@@ -2094,6 +2288,8 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 - Cross-org verifiers MUST resolve DIDs from external DID registries
 - Organizations MUST establish mutual agreement on supported DID methods before chain exchange
 - `originator_trust_tier` carries trust tier information across boundaries; receiving organizations MAY downgrade effective trust tier per their own policy
+
+<br>
 
 ### 22.3 Embedded / Offline
 
@@ -2112,6 +2308,8 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 
 **Conformance target:** Level 1 or Level 2. Level 3 revocation requirements may be relaxed to short-TTL-only mode with explicit capability declaration.
 
+<br>
+
 ### 22.4 Incremental Adoption Guidance
 
 Organizations will not deploy ADCS everywhere simultaneously. The following adoption path minimizes disruption:
@@ -2125,6 +2323,8 @@ Organizations will not deploy ADCS everywhere simultaneously. The following adop
 **Passthrough mode:** A non-ADCS-aware component in the middle of a chain MUST forward the `adcs_chain` or `adcs_token` metadata field unchanged. This is a passthrough contract, not a verification contract. Non-aware components do not verify; they do not strip or modify chain data.
 
 **Minimum viable deployment:** Phase 1 provides meaningful security guarantees: the terminal action is verified, the full chain is checked, and scope restriction is enforced at the point of consequence. This is achievable without modifying internal agent implementations.
+
+<br>
 
 ### 22.5 Performance Considerations
 
@@ -2151,6 +2351,8 @@ DID resolution introduces variable network latency. Implementations MUST cache D
 
 **Verification result caching:** Implementations MAY cache successful verification results for a chain using the key `chain_digest + current_time_bucket` (where `time_bucket` is a rounded interval shorter than the minimum TTL in the chain). Cached results MUST be invalidated immediately upon receiving a revocation event for any component of the chain.
 
+<br>
+
 ### 22.6 Audit Log Requirements
 
 Implementations MUST maintain an audit log of all chain verification events. The fields below are the minimum per-event audit record. Implementations SHOULD emit audit events per §23 (Audit Event Emission), which defines normative event types aligned with AILS and supersedes this minimum-field list when adopted. The following fields MUST be recorded per event:
@@ -2169,6 +2371,8 @@ Implementations MUST maintain an audit log of all chain verification events. The
 | `verifier_id` | Identifier of the verifying component |
 
 Audit logs MUST be retained for a minimum of 90 days. Deployments subject to regulatory requirements (SOX, HIPAA, GDPR, etc.) MUST apply the longer of 90 days and their applicable regulatory retention period. Full chains MUST be retrievable by `chain_id` for the duration of the audit retention period.
+
+<br>
 
 ### 22.7 ADCS Configuration Discovery
 
@@ -2214,7 +2418,7 @@ Implementations SHOULD expose a well-known discovery endpoint that allows client
 
 The discovery document SHOULD be cacheable with a `Cache-Control` header of `max-age=3600`.
 
----
+<br>
 
 ## 23. Audit Event Emission
 
@@ -2225,6 +2429,8 @@ ADCS defines a normative audit event taxonomy aligned with the AI Logging Standa
 Implementations MAY declare AILS conformance (§23.7) to obtain native interoperability with AILS consumers. Declaring AILS conformance is OPTIONAL. Implementations that do not declare AILS conformance remain fully conformant ADCS implementations and MAY emit §23.2 events in any serialization format provided the event type names, payload field names, and semantic values defined in this section are preserved.
 
 This section supersedes the minimum per-event audit record in §22.6 when adopted. §22.6 remains the minimum field set for v1.0.0-only implementations and for implementations that choose not to adopt the event-based model.
+
+<br>
 
 ### 23.2 Event Type Mapping (Normative)
 
@@ -2260,6 +2466,8 @@ The following table defines the normative mapping from ADCS triggers to AILS eve
 | Any other deployment-specific reason (including key compromise classified as an operational rather than security event, and chain-abandonment cascades) | `custom` |
 
 **`token_id` vs. `delegation_id` convention for `authority.token_revoked`:** ADCS revocation operates over two distinct identifier spaces — capability token `jti` (§14.4) and delegation/originator `delegation_id` (§14.1, §14.3). When a `authority.token_revoked` event records revocation of a capability token, the AILS `token_id` field MUST be populated with the token's `jti`. When a `authority.token_revoked` event records revocation of a delegation object or an originator declaration, the AILS `token_id` field MUST be populated with the revoked `delegation_id` and the event payload SHOULD include an implementation-specific annotation (e.g., under `context.labels` or an `x-adcs.revoked_identifier_kind` payload field) distinguishing `"token_jti"` from `"delegation_id"` to permit unambiguous downstream correlation with ADCS chain objects. Originator declaration revocation additionally triggers a `policy.violation` event per the table above; the two events share the same `correlation.session_id` (= `chain_id`).
+
+<br>
 
 ### 23.3 Error Code to Denial Reason Mapping (Normative)
 
@@ -2343,6 +2551,8 @@ When a chain verification failure produces an `authority.gate_denied` event, the
 
 Implementations encountering an error code added in a future ADCS revision not listed here MUST default the `denial_reason` to `policy_denied` and MUST include the new error code verbatim in the payload annotation described above.
 
+<br>
+
 ### 23.4 Envelope Mapping Rules (Normative)
 
 When ADCS audit events are emitted in AILS Event Envelope form (AILS §5, Appendix A), the following mapping rules apply. These rules ensure that AILS envelope fields carry the correct ADCS-layer identity and correlation information without redefining the envelope's semantics.
@@ -2385,6 +2595,8 @@ The `emitter` object represents the software component that produced the event a
 
 The ADCS originator trust tier from §4.8 — `hardware_bound`, `host_mediated`, or `policy_derived` — MUST be carried in the event payload on `authority.token_issued` events as a field named `originator_trust_tier`, placed within the `scope` object (AILS REQ-12.2.2). This enables AILS consumers to filter, weight, or alert on tokens by the cryptographic strength of the originating human authorization without inspecting the underlying chain.
 
+<br>
+
 ### 23.5 Serialization and Transport (Normative)
 
 The AILS Event Envelope (AILS §5, Appendix A) is the **reference serialization** for ADCS audit events. An implementation that emits §23.2 events as AILS-conformant envelopes is automatically interoperable with any AILS-conformant consumer without transformation.
@@ -2401,6 +2613,8 @@ Implementations that declare AILS conformance per §23.7 MUST use the AILS Event
 
 Transport of AILS-enveloped events is out of scope for ADCS and is governed by AILS DP-1 (Semantics Over Transport). Events MAY be transported via OpenTelemetry, message queues, HTTP, or any other mechanism that preserves envelope integrity.
 
+<br>
+
 ### 23.6 Integrity, Retention, and Redaction
 
 **Integrity.** Implementations SHOULD emit audit events with AILS Level 2 integrity fields — `sequence_number`, `stream_id`, and `chain_hash` per AILS §22.4 — to provide tamper-evidence. When the stream scope is per-session, the AILS `stream_id` MUST be set equal to the ADCS `chain_id` per AILS REQ-22.4.7 (applied to ADCS's session analog). Implementations serving deployments with regulatory or high-assurance requirements — including EU AI Act high-risk systems, financial-industry dual-control workflows, and forensic-evidence contexts — SHOULD emit Level 3 signed events per AILS §22.5, using the Ed25519 or ES256 signing algorithms permitted by AILS REQ-22.5.3. Event signatures are computed over the canonical event after any redaction has been applied, per AILS REQ-24.7.1, so redacted events remain integrity-verifiable.
@@ -2408,6 +2622,8 @@ Transport of AILS-enveloped events is out of scope for ADCS and is governed by A
 **Retention.** ADCS audit events — as `authority.*`, `session.*`, `credential.*`, and `policy.*` category events — fall within the AILS Governance retention tier per AILS REQ-25.2.1 and SHOULD be retained for a minimum of 3 years from chain termination (measured from the `session.state_changed` event recording the chain's transition to a terminal state, or from the final `authority.token_consumed`/`authority.token_expired` event when no explicit termination event is emitted). This 3-year minimum supersedes the 90-day minimum in §22.6 when audit-grade logging is required. The AILS Regulatory tier (10 years, per AILS REQ-25.2.1) applies when the deployment is subject to EU AI Act Article 12 high-risk-system requirements or equivalent regulatory retention obligations, per AILS §25.6. Deployers MUST retain events for the longer of the AILS minimum and any applicable regulatory requirement per AILS REQ-25.2.2.
 
 **Redaction.** The ADCS `intent` field (§8.3) and human-principal DIDs are sensitive per AILS §24 and SHOULD be redacted under the AILS `default` or `strict` redaction profiles in environments where intent text may contain PII or where regulatory constraints apply. When the ADCS `intent` field is redacted, the redacted value MUST follow AILS REQ-24.4.1 format conventions (`"[REDACTED]"` for omitted, `"sha256:<hex>"` for hashed, etc.) and the redaction MUST be recorded in the envelope `redaction.redacted_fields` array. Cryptographic signatures, `chain_digest` values, DIDs of non-human principals (agents, systems, tools), delegation identifiers, token identifiers, and structural metadata (`permissions_granted`, `constraints_added`, `action_id`, etc.) are **not** sensitive under AILS §24.2 and MUST NOT be redacted — redacting these fields would destroy the audit value of the event and break chain reconstruction. The absolute AILS prohibition on credential material (AILS REQ-24.3.2) applies: raw signing keys, bearer token contents, and private key material MUST NOT appear in ADCS audit events under any configuration.
+
+<br>
 
 ### 23.7 AILS Conformance Declaration (Normative, OPTIONAL Capability)
 
@@ -2432,6 +2648,8 @@ where N is the declared ADCS Conformance Level (1, 2, or 3) and K is the declare
 
 Declaring AILS conformance is OPTIONAL and does not affect satisfaction of ADCS Conformance Levels 1, 2, or 3 per §17.1. See §17.3.
 
+<br>
+
 ### 23.8 Alert Binding (Normative)
 
 Implementations emitting §23.2 events in AILS envelope form MUST emit AILS `system.alert` events under the following conditions, in accordance with AILS §27.2. These alert bindings are in addition to any other alert conditions defined in AILS §27 that apply generically to the categories of events ADCS emits.
@@ -2450,7 +2668,7 @@ These conditions indicate adversarial activity, chain integrity compromise, or g
 
 Implementations MAY additionally emit `system.alert` events for other error-code patterns based on deployment risk tolerance. Custom alert conditions MUST use AILS `x-` prefix naming per AILS REQ-27.5.1.
 
----
+<br>
 
 ## Appendix A — Core Permission Vocabulary
 
@@ -2487,7 +2705,7 @@ The `delegate` permission MAY be granted conditionally via `permissions_conditio
 
 The `allowed_delegate_types` values are deployment-defined agent type strings. Governance layers enforcing `delegation_scope` MUST verify that the target delegate's registered agent type matches a value in `allowed_delegate_types` before permitting sub-delegation.
 
----
+<br>
 
 ## Appendix B — Example: Complete Delegation Chain
 
@@ -2618,7 +2836,7 @@ A travel booking workflow with two hops, conditional permissions, and updated st
 
 The booking permission propagates as conditional — not available for unconditional exercise by the hotel search tool. Budget narrowed from $3000 to $1200. `max_delegation_depth` inherited at 3; `hotel-specialist` withheld `delegate`, so no further sub-delegation is possible from this branch regardless.
 
----
+<br>
 
 ## Appendix C — Agent Identity Lifecycle
 
@@ -2627,6 +2845,8 @@ The booking permission propagates as conditional — not available for unconditi
 ### C.1 The Identity Provisioning Problem
 
 ADCS requires every agent to have a DID that resolves to a current public key. In static, long-lived service deployments this is straightforward. In cloud-native environments where hundreds or thousands of agents are created dynamically, pre-provisioning DIDs for every possible agent instance is impractical and leads to credential sprawl and over-permissioning.
+
+<br>
 
 ### C.2 Just-in-Time (JIT) Identity Provisioning
 
@@ -2639,6 +2859,8 @@ The recommended model for ephemeral and dynamically instantiated agents is **jus
 
 This model ensures no orphaned credentials — an agent's identity has the same lifetime as its task.
 
+<br>
+
 ### C.3 SPIFFE/SPIRE Integration
 
 Organizations using SPIFFE/SPIRE for workload identity MAY derive ADCS agent DIDs from SPIFFE SVIDs (X.509 or JWT format). The SPIFFE ID (`spiffe://trust-domain/workload`) maps naturally to a `did:web` identifier. The SVID's X.509 certificate provides the verification key material for the DID document.
@@ -2648,6 +2870,8 @@ This approach provides:
 - Integration with existing PKI infrastructure
 - Attestation of the workload's runtime environment (node attestation, pod attestation)
 
+<br>
+
 ### C.4 Long-Lived Agent Identities
 
 Some agents (persistent orchestrators, registered service agents) have long-lived identities appropriate for `did:web` anchored at a stable domain. Requirements:
@@ -2656,6 +2880,8 @@ Some agents (persistent orchestrators, registered service agents) have long-live
 - The verification key MUST be rotated at intervals not exceeding 90 days (Section 13.2)
 - Key rotation MUST update the DID document and MUST NOT break active chains; new keys are used for new delegations, old keys remain valid for verifying existing signed delegations until those chains expire
 - The DID document MUST be served over HTTPS with a valid certificate
+
+<br>
 
 ### C.5 Agent Registry Requirements
 
@@ -2667,7 +2893,7 @@ Organizations MUST maintain an Agent Registry that:
 - Records the `chain_id` values for which each agent has received delegations (for cascade revocation)
 - Is accessible with availability requirements appropriate to the real-time nature of ADCS verification (target: 99.9% uptime; ≤ 100ms p99 response time for DID lookup)
 
----
+<br>
 
 ## Appendix D — Conformance Test Vectors
 
@@ -2692,6 +2918,8 @@ Each conformant implementation MUST pass test vectors in the following categorie
 | Invalid: revocation | TV-REVOKE | 3 | Revoked originator, delegation, and token |
 | Edge cases | TV-EDGE | 10 | Clock skew boundary, empty permissions, min TTL, max depth |
 
+<br>
+
 ### D.2 Minimal Valid Chain (TV-VALID-01) — Summary
 
 ```
@@ -2709,6 +2937,8 @@ Expected result: VALID
 
 Full JSON in repository at `test-vectors/TV-VALID-01.json`.
 
+<br>
+
 ### D.3 Permission Expansion (TV-MONO-01) — Summary
 
 ```
@@ -2722,6 +2952,8 @@ Expected result: INVALID
 ```
 
 Full JSON in repository at `test-vectors/TV-MONO-01.json`.
+
+<br>
 
 ### D.4 Unauthorized Subdelegation (TV-MONO-08) — Summary
 
@@ -2738,7 +2970,7 @@ Expected result: INVALID
 
 Full JSON in repository at `test-vectors/TV-MONO-08.json`.
 
----
+<br>
 
 ## Appendix E — Reference SDK Architecture
 
@@ -2758,6 +2990,8 @@ adcs/
   constraint_registry — pluggable registry for constraint type evaluators
   did_resolver        — resolves DID documents; caches per Section 13.3
 ```
+
+<br>
 
 ### E.2 chain_verifier Interface
 
@@ -2791,6 +3025,8 @@ interface ChainVerifier {
 }
 ```
 
+<br>
+
 ### E.3 chain_builder Interface
 
 ```typescript
@@ -2819,6 +3055,8 @@ interface ChainBuilder {
 }
 ```
 
+<br>
+
 ### E.4 constraint_registry Interface
 
 ```typescript
@@ -2836,7 +3074,7 @@ interface ConstraintRegistry {
 }
 ```
 
----
+<br>
 
 ## Appendix F — Implementer Quick Reference
 
@@ -2881,6 +3119,8 @@ interface ConstraintRegistry {
 - [ ] *Optional:* Macaroon token support (Section 7.6)
 - [ ] *Optional:* Declare AILS Level 3 conformance (§23.7) by signing §23.2 audit events with Ed25519 or ES256 per AILS §22.5 and retaining audit-category events for the Regulatory tier (10 years per AILS §25) when subject to EU AI Act high-risk-system requirements or equivalent regulation
 
+<br>
+
 ### F.4 Verification Algorithm — Four-Phase Summary
 
 ```
@@ -2917,6 +3157,8 @@ Revocation (Steps R.1–R.4)
 
 → VALID with effective scope, OR INVALID with error code.
 ```
+
+<br>
 
 ### F.5 Complete Error Code Reference
 
@@ -2969,6 +3211,6 @@ Revocation (Steps R.1–R.4)
 | `INVALID_COMPACTION_SIGNATURE` | Compaction | 15.6 |
 | `INTERMEDIATE_DIGEST_UNAVAILABLE` | Compaction | 15.6 |
 
----
+<br>
 
 *End of Agent Delegation Chain Standard*
