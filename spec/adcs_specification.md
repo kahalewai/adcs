@@ -978,7 +978,7 @@ Implementations that declare `structural_only` MUST NOT represent themselves as 
 
 ### 9.5 Cumulative Constraint Accounting
 
-ADCS constraint values are per-chain structural limits. ADCS does not maintain running totals against constraint budgets across multiple chains from the same originator. An originator granting `budget.max = $1500` across five separate chains authorizing $400 each would result in $2000 in total authorized spend — exceeding the constraint — without ADCS detecting it.
+ADCS constraint values are per-chain structural limits. ADCS does not maintain running totals against constraint budgets across multiple chains from the same originator. An originator granting `budget.max = $1500` across five separate chains authorizing $400 each would result in $2000 in total authorized spend, exceeding the constraint, without ADCS detecting it.
 
 Deployments requiring cumulative constraint enforcement SHOULD implement a **Constraint Accounting Service (CAS)** that is consulted at chain construction time. The CAS maintains running totals per originator declaration and per constraint type, and approves or denies chain construction based on remaining budget.
 
