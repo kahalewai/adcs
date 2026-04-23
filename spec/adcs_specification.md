@@ -2424,11 +2424,11 @@ The discovery document SHOULD be cacheable with a `Cache-Control` header of `max
 
 ### 23.1 Purpose
 
-ADCS defines a normative audit event taxonomy aligned with the AI Logging Standard (AILS) so that ADCS audit events are portable across observability and security tooling. Implementations emit events describing chain verification outcomes, capability token lifecycle, delegation hop creation, permission escalation, condition satisfaction, and revocation in a form that any AILS-aware consumer — dashboards, SIEMs, log pipelines, cross-standard correlation tools — can ingest without custom transformation.
+ADCS defines a normative audit event taxonomy aligned with the AI Logging Standard (AILS) so that ADCS audit events are portable across observability and security tooling. Implementations emit events describing chain verification outcomes, capability token lifecycle, delegation hop creation, permission escalation, condition satisfaction, and revocation in a form that any AILS-aware consumer — dashboards, SIEMs, log pipelines, cross-standard correlation tools, can ingest without custom transformation.
 
 Implementations MAY declare AILS conformance (§23.7) to obtain native interoperability with AILS consumers. Declaring AILS conformance is OPTIONAL. Implementations that do not declare AILS conformance remain fully conformant ADCS implementations and MAY emit §23.2 events in any serialization format provided the event type names, payload field names, and semantic values defined in this section are preserved.
 
-This section supersedes the minimum per-event audit record in §22.6 when adopted. §22.6 remains the minimum field set for v1.0.0-only implementations and for implementations that choose not to adopt the event-based model.
+This section supersedes the minimum per-event audit record in §22.6 when adopted. §22.6 remains the minimum field set for v1.0.0 only implementations and for implementations that choose not to adopt the event-based model.
 
 <br>
 
@@ -2593,7 +2593,7 @@ The `emitter` object represents the software component that produced the event a
 
 **Originator trust tier carry-through:**
 
-The ADCS originator trust tier from §4.8 — `hardware_bound`, `host_mediated`, or `policy_derived` — MUST be carried in the event payload on `authority.token_issued` events as a field named `originator_trust_tier`, placed within the `scope` object (AILS REQ-12.2.2). This enables AILS consumers to filter, weight, or alert on tokens by the cryptographic strength of the originating human authorization without inspecting the underlying chain.
+The ADCS originator trust tier from §4.8, `hardware_bound`, `host_mediated`, or `policy_derived` — MUST be carried in the event payload on `authority.token_issued` events as a field named `originator_trust_tier`, placed within the `scope` object (AILS REQ-12.2.2). This enables AILS consumers to filter, weight, or alert on tokens by the cryptographic strength of the originating human authorization without inspecting the underlying chain.
 
 <br>
 
@@ -2601,7 +2601,7 @@ The ADCS originator trust tier from §4.8 — `hardware_bound`, `host_mediated`,
 
 The AILS Event Envelope (AILS §5, Appendix A) is the **reference serialization** for ADCS audit events. An implementation that emits §23.2 events as AILS-conformant envelopes is automatically interoperable with any AILS-conformant consumer without transformation.
 
-Implementations MAY use alternative serializations — OpenTelemetry log records, syslog RFC 5424 messages, CEF (Common Event Format), or proprietary formats — provided that:
+Implementations MAY use alternative serializations, OpenTelemetry log records, syslog RFC 5424 messages, CEF (Common Event Format), or proprietary formats — provided that:
 
 1. The ADCS event type names defined in §23.2 are preserved and recoverable from the serialized event.
 2. The payload field names and semantic values defined in §23.2, §23.3, and §23.4 are preserved and recoverable.
@@ -2670,7 +2670,7 @@ Implementations MAY additionally emit `system.alert` events for other error-code
 
 <br>
 
-## Appendix A — Core Permission Vocabulary
+## Appendix A - Core Permission Vocabulary
 
 The following permission strings are registered in ADCS v1.0.0. All conformant implementations MUST recognize these identifiers.
 
@@ -2707,7 +2707,7 @@ The `allowed_delegate_types` values are deployment-defined agent type strings. G
 
 <br>
 
-## Appendix B — Example: Complete Delegation Chain
+## Appendix B - Example: Complete Delegation Chain
 
 A travel booking workflow with two hops, conditional permissions, and updated structure including DID-based principals.
 
@@ -2838,7 +2838,7 @@ The booking permission propagates as conditional — not available for unconditi
 
 <br>
 
-## Appendix C — Agent Identity Lifecycle
+## Appendix C - Agent Identity Lifecycle
 
 *This appendix is non-normative. It describes how agent identities are provisioned, maintained, and decommissioned in practice.*
 
@@ -2850,14 +2850,14 @@ ADCS requires every agent to have a DID that resolves to a current public key. I
 
 ### C.2 Just-in-Time (JIT) Identity Provisioning
 
-The recommended model for ephemeral and dynamically instantiated agents is **just-in-time identity provisioning**:
+The recommended model for ephemeral and dynamically instantiated agents is just-in-time identity provisioning:
 
-1. When an agent is instantiated for a task, the platform's **Agent Identity Service** generates a new key pair and creates a `did:jwk` or `did:web` DID bound to that instance
+1. When an agent is instantiated for a task, the platform's Agent Identity Service generates a new key pair and creates a `did:jwk` or `did:web` DID bound to that instance
 2. The DID is registered in the organization's Agent Registry and associated with the agent's task context, the originating chain's `chain_id`, and the agent's type classification
 3. The agent receives its private key via a secure credential injection mechanism (e.g., Kubernetes Secrets, SPIFFE SVID, HSM-backed injection)
 4. Upon task completion or agent decommissioning, the DID is revoked in the Agent Registry, the private key is destroyed, and the revocation is published
 
-This model ensures no orphaned credentials — an agent's identity has the same lifetime as its task.
+This model ensures no orphaned credentials, an agent's identity has the same lifetime as its task.
 
 <br>
 
@@ -2895,7 +2895,7 @@ Organizations MUST maintain an Agent Registry that:
 
 <br>
 
-## Appendix D — Conformance Test Vectors
+## Appendix D - Conformance Test Vectors
 
 *The complete machine-readable test vector corpus is maintained in the standard's repository. This appendix defines the required test vector categories and provides annotated summaries.*
 
@@ -2920,7 +2920,7 @@ Each conformant implementation MUST pass test vectors in the following categorie
 
 <br>
 
-### D.2 Minimal Valid Chain (TV-VALID-01) — Summary
+### D.2 Minimal Valid Chain (TV-VALID-01) - Summary
 
 ```
 Chain:
@@ -2939,7 +2939,7 @@ Full JSON in repository at `test-vectors/TV-VALID-01.json`.
 
 <br>
 
-### D.3 Permission Expansion (TV-MONO-01) — Summary
+### D.3 Permission Expansion (TV-MONO-01) - Summary
 
 ```
 Chain:
@@ -2955,7 +2955,7 @@ Full JSON in repository at `test-vectors/TV-MONO-01.json`.
 
 <br>
 
-### D.4 Unauthorized Subdelegation (TV-MONO-08) — Summary
+### D.4 Unauthorized Subdelegation (TV-MONO-08) - Summary
 
 ```
 Chain:
@@ -2972,7 +2972,7 @@ Full JSON in repository at `test-vectors/TV-MONO-08.json`.
 
 <br>
 
-## Appendix E — Reference SDK Architecture
+## Appendix E - Reference SDK Architecture
 
 *This appendix is non-normative. It defines an interface contract for conformant SDK implementations to ensure API-level interoperability.*
 
@@ -3076,7 +3076,7 @@ interface ConstraintRegistry {
 
 <br>
 
-## Appendix F — Implementer Quick Reference
+## Appendix F - Implementer Quick Reference
 
 ### F.1 Level 1 Conformance Checklist
 
@@ -3121,7 +3121,7 @@ interface ConstraintRegistry {
 
 <br>
 
-### F.4 Verification Algorithm — Four-Phase Summary
+### F.4 Verification Algorithm - Four-Phase Summary
 
 ```
 Input: chain, token, terminal_action, current_time, clock_skew_tolerance
