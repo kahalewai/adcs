@@ -1,14 +1,11 @@
 # Agent Delegation Chain Standard (ADCS)
 
 **Status:** Proposed Standard  
-
-**Date:** April 11, 2026  
-
 **Version:** 1.0.0  
-
+**Date:** April 11, 2026  
 **License:** Apache 2.0  
 
-<br>
+---
 
 *Begin Agent Delegation Chain Standard*
 
@@ -18,9 +15,9 @@ The Agent Delegation Chain Standard (ADCS) defines a normative data model, verif
 
 ADCS addresses the authorization gap between session-level identity (OAuth 2.1) and session-level circuit breaking (ALS). It answers the question: **given that this agent session is permitted to run, is this specific agent authorized to perform this specific action within the scope that was delegated to it?**
 
-Principals are identified using Decentralized Identifiers (DIDs), anchoring public keys in externally resolvable identity documents and decoupling key rotation from chain structure. Chains support both linear delegation sequences and directed acyclic graph (DAG) workflows with defined merge semantics. Originator declarations may express multi-party quorum authorization for regulated-industry use cases. Conditional permissions, continuous revocation signals via CAEP, and just-in-time permission escalation are supported.
+Principals are identified using Decentralized Identifiers (DIDs), anchoring public keys in externally resolvable identity documents and decoupling key rotation from chain structure. Chains support both linear delegation sequences and directed acyclic graph (DAG) workflows with defined merge semantics. Originator declarations may express multi-party quorum authorization for regulated-industry use cases. Conditional permissions, continuous revocation signals via CAEP, and just-in-time permission escalation are supported. ADCS additionally defines a normative audit event taxonomy aligned with the AI Logging Standard (AILS) so that ADCS audit events are natively interoperable with AILS-aware dashboards, SIEMs, and log pipelines; AILS conformance is declarable but not required.
 
-<br>
+---
 
 ## Table of Contents
 
@@ -46,6 +43,7 @@ Principals are identified using Decentralized Identifiers (DIDs), anchoring publ
 20. [Glossary](#20-glossary)
 21. [References](#21-references)
 22. [Deployment Topologies](#22-deployment-topologies)
+23. [Audit Event Emission](#23-audit-event-emission)
 - Appendix A — Core Permission Vocabulary
 - Appendix B — Example: Complete Delegation Chain
 - Appendix C — Agent Identity Lifecycle
@@ -53,7 +51,7 @@ Principals are identified using Decentralized Identifiers (DIDs), anchoring publ
 - Appendix E — Reference SDK Architecture
 - Appendix F — Implementer Quick Reference
 
-<br>
+---
 
 ## 1. Introduction
 
@@ -96,13 +94,13 @@ ADCS does not specify:
 
 > **⚠ WARNING — Constraint Enforcement Boundary:** ADCS carries constraints through a delegation chain and verifies that constraints are structurally present and structurally non-loosened at each hop. **ADCS does not enforce that a terminal action's parameters satisfy those constraints.** A chain declaring `budget.max = 1500` provides no monetary enforcement guarantee unless the governance layer implements semantic mapping for the target tool's parameters. Implementations MUST declare their constraint evaluation capability per Section 9.4. Deployers MUST NOT rely on ADCS alone as a semantic enforcement mechanism.
 
-<br>
+---
 
 ## 2. Normative Language
 
 The key words **MUST**, **MUST NOT**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **MAY**, and **OPTIONAL** in this document are to be interpreted as described in RFC 2119.
 
-<br>
+---
 
 ## 3. Scope
 
@@ -137,7 +135,7 @@ The key words **MUST**, **MUST NOT**, **SHALL**, **SHALL NOT**, **SHOULD**, **SH
 | Agent runtime implementation | Implementer discretion within conformance requirements |
 | Cumulative constraint accounting across chains | Optional Constraint Accounting Service; see Section 9.5 |
 
-<br>
+---
 
 ## 4. Core Concepts
 
@@ -228,7 +226,7 @@ The **originator trust tier** expresses the degree to which the originator decla
 
 Governance systems SHOULD apply different trust weights based on originator trust tier. A `hardware_bound` declaration provides stronger assurance of human authorization than a `host_mediated` declaration; both are stronger than `policy_derived`. See Section 8.3.
 
-<br>
+---
 
 ## 5. Delegation Object
 
@@ -401,7 +399,7 @@ When a conditional permission's condition is satisfied (e.g., a human approves t
 
 **Audit requirement:** Condition satisfaction records MUST be logged alongside the chain verification event and retained for the audit retention period (Section 22.6).
 
-<br>
+---
 
 ## 6. Delegation Chain Structure
 
@@ -481,7 +479,7 @@ The monotonic restriction invariant holds at merge points: the merged effective 
 
 **DAG conformance** is an OPTIONAL capability at Level 3 (see Section 17). Implementations that do not support DAG chains MUST reject chains containing `parent_delegation_ids` with `DAG_NOT_SUPPORTED`.
 
-<br>
+---
 
 ## 7. Capability Token Binding
 
@@ -589,7 +587,7 @@ To protect deployment topology and organizational trust hierarchy from disclosur
 
 When operating in token-only mode, the tool server MUST trust the token issuer's governance layer for chain verification. The full chain MUST remain available for audit retrieval via the `chain_id`. This mode is OPTIONAL but RECOMMENDED for all third-party tool integrations.
 
-<br>
+---
 
 ## 8. Originator Declaration
 
@@ -769,7 +767,7 @@ The `intent_structured` field provides machine-readable classification of the or
 
 `intent_structured` MUST be preserved and accessible throughout the chain alongside `intent`. When present in the originator declaration, it MUST NOT be modified after signing.
 
-<br>
+---
 
 ## 9. Constraint Type Registry
 
@@ -950,7 +948,7 @@ Releases a reservation when a chain is abandoned before finalization.
 
 Verifiers that enforce cumulative constraints SHOULD confirm the reservation is valid and not expired before accepting the chain. The CAS is an OPTIONAL deployment component; implementations that do not deploy a CAS MUST still support the `budget` constraint type for per-chain structural verification.
 
-<br>
+---
 
 ## 10. Verification Algorithm
 
@@ -1295,7 +1293,7 @@ If denied, the governance layer returns a denial with a reason code. The agent M
 
 **Constraints:** An escalation MUST NOT request a permission not present in the originator declaration's `permissions_granted` or `permissions_conditional`. Governance layers MUST reject escalations that would expand scope beyond the originator's root grant.
 
-<br>
+---
 
 ## 11. Chain Compaction
 
@@ -1351,7 +1349,7 @@ Verification of a compacted chain executes Phases 1–3 adapted for the compacte
 
 Implementations performing high-assurance verification SHOULD retrieve the full chain from `full_chain_locator` and execute the complete algorithm.
 
-<br>
+---
 
 ## 12. Cross-Protocol Chains
 
@@ -1530,7 +1528,7 @@ For any HTTP-based tool invocation not covered by a more specific binding:
 }
 ```
 
-<br>
+---
 
 ## 13. Cryptographic Requirements
 
@@ -1585,7 +1583,7 @@ When a signing key is suspected or confirmed compromised, the following actions 
 
 Implementations MUST provide an emergency revocation endpoint that accepts authenticated key compromise reports and initiates this response automatically where feasible. The emergency endpoint URI SHOULD be declared in the revocation service metadata (Section 14.6).
 
-<br>
+---
 
 ## 14. Revocation
 
@@ -1695,7 +1693,7 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `caep_endpoint` | OPTIONAL | CAEP event stream endpoint; REQUIRED if implementation declares CAEP support |
 | `signature` | REQUIRED | Signature over canonical metadata body |
 
-<br>
+---
 
 ## 15. Error Codes
 
@@ -1775,7 +1773,7 @@ Every chain MUST reference a revocation service via `chain.revocation_service`. 
 | `INVALID_COMPACTION_SIGNATURE` | Compacted chain's compaction signature verification failed |
 | `INTERMEDIATE_DIGEST_UNAVAILABLE` | Full chain could not be retrieved for high-assurance verification |
 
-<br>
+---
 
 ## 16. Security Considerations
 
@@ -1862,7 +1860,7 @@ A full delegation chain reveals:
 
 Third-party tool servers receiving full chains gain detailed intelligence about the calling system's architecture. Implementations SHOULD use token-only presentation mode (Section 7.7) for all third-party tool invocations. The full chain MUST remain available for audit retrieval but SHOULD NOT be transmitted beyond organizational trust boundaries as a default.
 
-<br>
+---
 
 ## 17. Conformance
 
@@ -1925,7 +1923,21 @@ Test categories:
 - Error codes: all failures produce correct error codes
 - Cross-protocol: chains spanning registered protocols verified correctly
 
-<br>
+### 17.3 AILS Conformance (OPTIONAL capability)
+
+Implementations at any ADCS Conformance Level (1, 2, or 3) MAY additionally declare AILS (AI Logging Standard) conformance per §23.7. Declaring AILS conformance is OPTIONAL. It is not required for any ADCS Conformance Level and does not affect ADCS Level 1/2/3 satisfaction. Implementations that do not declare AILS conformance remain fully conformant ADCS implementations at their declared level.
+
+Implementations that declare AILS conformance MUST emit the audit events defined in §23.2 in the AILS Event Envelope form specified in AILS §5 and MUST meet the integrity and retention requirements of the declared AILS Level as defined in §23.6 and §23.7.
+
+Cross-standard conformance claims follow the format prescribed by AILS §28.5.2. Example claims:
+
+- `"ADCS v1.0.0 Level 2 Conformant; AILS v1.0.0 Level 2 audit events emitted"`
+- `"ADCS v1.0.0 Level 3 Conformant; AILS v1.0.0 Level 3 audit events emitted"`
+- `"ADCS v1.0.0 Level 1 Conformant; AILS v1.0.0 Level 1 audit events emitted"`
+
+An implementation that emits a subset of the §23.2 events in AILS envelope form but not all of them MUST NOT claim full AILS conformance; partial conformance MAY be claimed per AILS §28.7.1 with explicit enumeration of the event types satisfied.
+
+---
 
 ## 18. Relationship to Other Standards
 
@@ -1959,7 +1971,17 @@ CAEP (OpenID Foundation) defines an event stream for pushing session-change sign
 
 **IETF Identity Chaining (draft-ietf-oauth-identity-chaining):** Cross-domain OAuth identity preservation. Addresses identity propagation across organizational boundaries; ADCS addresses permission restriction within a task chain. In cross-organization deployments, Identity Chaining and ADCS serve different layers of the same trust problem.
 
-<br>
+### 18.6 AILS (AI Logging Standard)
+
+AILS (AI Logging Standard) defines a canonical event envelope, event taxonomy, graduated integrity model, provenance classification, redaction framework, and retention tiers for AI system telemetry and audit records. It is the intended reference audit event format for ADCS.
+
+The ADCS-to-AILS event mapping is defined normatively in §23 (Audit Event Emission). ADCS chain verification outcomes, capability token lifecycle events, delegation hop creation, permission escalation requests, condition satisfaction records, and revocation events map directly to AILS event types in the `authority.*`, `agent.*`, `policy.*`, `human.*`, `session.*`, and `credential.*` categories. The AILS Event Envelope (AILS §5, Appendix A) is the reference serialization for ADCS audit events; alternative serializations are permitted per §23.5 provided event type names, payload field names, and semantic values are preserved.
+
+ADCS does not require AILS adoption. An ADCS implementation that emits audit records in OpenTelemetry log form, syslog RFC 5424, CEF, or a proprietary format is fully conformant to ADCS §22.6 and §23 provided the event type names and payload field names defined in §23 are preserved. Declaring AILS conformance per §23.7 is an OPTIONAL capability that makes ADCS audit events natively ingestible by AILS-aware consumers — dashboards, SIEMs, log pipelines, and cross-standard correlation tools — without custom transformation.
+
+AILS v1.0.0 does not currently list ADCS in its own cross-standard event matrix (AILS §29, Appendix E). A complementary AILS update proposing an §29.12 subsection and an Appendix E.10 entry mirroring the mapping defined in §23.2 of this standard is planned for a future AILS revision.
+
+---
 
 ## 19. Versioning
 
@@ -1971,7 +1993,7 @@ This standard uses semantic versioning: `MAJOR.MINOR.PATCH`.
 
 Verifiers MUST reject objects with a MAJOR version they do not support. Verifiers SHOULD accept objects with a higher MINOR version by treating unrecognized optional fields as absent.
 
-<br>
+---
 
 ## 20. Glossary
 
@@ -2009,7 +2031,7 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 | **Terminal Action** | The specific protocol operation that a delegation chain authorizes |
 | **Token-Only Mode** | A capability token presentation mode in which only the token, not the full chain, is transmitted to the terminal tool server |
 
-<br>
+---
 
 ## 21. References
 
@@ -2028,6 +2050,7 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 - **W3C DID Core** — Decentralized Identifiers (DIDs) v1.0. W3C Recommendation, 2022
 - **Macaroons** — Macaroons: Cookies with Contextual Caveats. Birgisson et al., Google Research, 2014
 - **ALS** — Agent-Layer Security Standard v2.1.0, 2026
+- **AILS** — AI Logging Standard v1.0.0, 2026
 - **CAEP** — Continuous Access Evaluation Protocol. OpenID Foundation, 2023
 - **UCAN** — User Controlled Authorization Networks. Fission/DAG House, 2022
 - **SPIFFE** — Secure Production Identity Framework for Everyone. CNCF, 2018
@@ -2035,7 +2058,7 @@ Verifiers MUST reject objects with a MAJOR version they do not support. Verifier
 - **draft-ietf-oauth-identity-chaining** — Identity Chaining Across Trust Domains. IETF OAuth WG (active draft)
 - **ACP** — Agent Communication Protocol. IBM / Linux Foundation AI & Data, 2024
 
-<br>
+---
 
 ## 22. Deployment Topologies
 
@@ -2130,7 +2153,7 @@ DID resolution introduces variable network latency. Implementations MUST cache D
 
 ### 22.6 Audit Log Requirements
 
-Implementations MUST maintain an audit log of all chain verification events. The following fields MUST be recorded per event:
+Implementations MUST maintain an audit log of all chain verification events. The fields below are the minimum per-event audit record. Implementations SHOULD emit audit events per §23 (Audit Event Emission), which defines normative event types aligned with AILS and supersedes this minimum-field list when adopted. The following fields MUST be recorded per event:
 
 | Field | Description |
 |---|---|
@@ -2166,6 +2189,7 @@ Implementations SHOULD expose a well-known discovery endpoint that allows client
   "dag_support": false,
   "macaroon_support": false,
   "caep_support": true,
+  "ails_conformance": "none",
   "revocation_service": "https://trust.example.com/.well-known/adcs-revocation",
   "cas_endpoint": "https://trust.example.com/adcs/cas/reserve",
   "max_chain_depth": 20
@@ -2183,13 +2207,250 @@ Implementations SHOULD expose a well-known discovery endpoint that allows client
 | `dag_support` | REQUIRED | Whether DAG chains are accepted |
 | `macaroon_support` | REQUIRED | Whether Macaroon tokens are accepted |
 | `caep_support` | REQUIRED | Whether CAEP continuous revocation is supported |
+| `ails_conformance` | REQUIRED | Declared AILS (AI Logging Standard) conformance level for audit event emission. One of `"none"`, `"level_1"`, `"level_2"`, `"level_3"`. See §23.7 |
 | `revocation_service` | REQUIRED | URI of revocation service metadata |
 | `cas_endpoint` | OPTIONAL | URI of Constraint Accounting Service, if deployed |
 | `max_chain_depth` | REQUIRED | Maximum accepted chain depth |
 
 The discovery document SHOULD be cacheable with a `Cache-Control` header of `max-age=3600`.
 
-<br>
+---
+
+## 23. Audit Event Emission
+
+### 23.1 Purpose
+
+ADCS defines a normative audit event taxonomy aligned with the AI Logging Standard (AILS) so that ADCS audit events are portable across observability and security tooling. Implementations emit events describing chain verification outcomes, capability token lifecycle, delegation hop creation, permission escalation, condition satisfaction, and revocation in a form that any AILS-aware consumer — dashboards, SIEMs, log pipelines, cross-standard correlation tools — can ingest without custom transformation.
+
+Implementations MAY declare AILS conformance (§23.7) to obtain native interoperability with AILS consumers. Declaring AILS conformance is OPTIONAL. Implementations that do not declare AILS conformance remain fully conformant ADCS implementations and MAY emit §23.2 events in any serialization format provided the event type names, payload field names, and semantic values defined in this section are preserved.
+
+This section supersedes the minimum per-event audit record in §22.6 when adopted. §22.6 remains the minimum field set for v1.0.0-only implementations and for implementations that choose not to adopt the event-based model.
+
+### 23.2 Event Type Mapping (Normative)
+
+The following table defines the normative mapping from ADCS triggers to AILS event types. Implementations emitting §23 audit events MUST emit an event of the specified AILS event type for each listed ADCS trigger, with at minimum the listed required payload fields populated. AILS event type names and payload field names are drawn from AILS Appendix B (Event Type Registry) and from the payload requirements in AILS §11, §12, §13, §14, and §15.
+
+| ADCS Trigger | AILS Event Type | Required Payload Fields |
+|---|---|---|
+| Chain verification succeeds (§10.8 VALID) | `authority.gate_passed` | `gate_id`, `token_id` (= token `jti`), `action_id` (= `terminal_action.action_id`), `validations_performed` (array containing at minimum `"signature_verified"`, `"temporal_valid"`, `"monotonic_valid"`, `"pop_verified"`, `"not_revoked"`), `validated_at` |
+| Chain verification fails (§10.8 INVALID) | `authority.gate_denied` | `gate_id`, `action_id`, `denial_reason` (mapped from ADCS error code per §23.3), `token_id` (if a token was presented), `denied_at`, `escalation_triggered` |
+| Capability token issued (§7) | `authority.token_issued` | `token_id` (= `jti`), `action_id` (= `terminal_action.action_id`), `scope` (object containing `effective_permissions`, `effective_constraints`, `originator_trust_tier`), `issued_at`, `expires_at` (= token `exp`), `issuer` (= token `iss`) |
+| Capability token consumed at terminal action | `authority.token_consumed` | `token_id`, `action_id`, `consumed_at`, `consumed_by`, `execution_result` (`"success"`, `"error"`, or `"partial"`) |
+| Capability token reaches `exp` without consumption | `authority.token_expired` | `token_id`, `action_id`, `issued_at`, `expired_at`, `reason` (`"timeout"`, `"plan_cancelled"`, `"superseded"`, or implementation-specific value) |
+| Delegation or token revoked (§14) | `authority.token_revoked` | `token_id` (= `jti` for token revocation; set to `delegation_id` for delegation-object revocation — see convention note below), `action_id`, `revoked_at`, `revoked_by`, `revocation_reason` (mapped per revocation-reason convention below) |
+| Each delegation hop creation | `agent.delegation` | `delegating_agent_id` (= `delegator.did`), `receiving_agent_id` (= `delegate.did`), `delegation_type` (`"sub_goal"` for in-protocol delegation; `"custom"` for cross-protocol delegation per §12), `delegation_depth`, `constraints` (= `constraints_added` from the delegation object), `status` (`"initiated"` at hop creation) |
+| Permission escalation request issued (§10.10) | `policy.escalation` | `escalation_id`, `escalation_reason` (`"scope_boundary"`), `severity`, `escalated_at`, `execution_state` (`"halted"`), `action_pending` (= `requested_permission`), `authority_frozen` (= `true`), `session_id` (= `chain_id`) |
+| Escalation approved or denied | `human.escalation_response` | `escalation_event_id`, `response_action` (`"resume"`, `"terminate"`, or `"modify_and_resume"`), `reviewer_id`, `reviewed_at`, `authority_granted` |
+| Condition satisfaction record attached (§5.6) | `human.confirmation` | `confirmation_type` (`"action_approval"`), `target_event_id` (= the `event_id` of the corresponding `authority.token_issued` event), `decision` (`"approved"`), `reviewer_id` (= `satisfied_by`), `reviewed_at` (= `satisfied_at`), `scope` (object with `action` = the permission being confirmed and `resource` = `terminal_action.target`) |
+| Originator declaration revoked (§14.3) | `policy.violation` | `violation_type` (`"unauthorized_action"`), `severity` (`"critical"`), `policy_name` (`"adcs_originator_revocation"`), `description`, `detected_at`, `violating_entity` (= `originator.did`), `action_taken` (`"blocked"`) |
+| CAEP `session.revoked` received (§14.6) | `session.state_changed` | `session_id` (= `chain_id`), `previous_state`, `new_state` (`"terminated"`), `transition_trigger` (`"policy"`), `triggered_by`, `transitioned_at`, `reason` |
+| CAEP `credential.compromise` received (§14.6) | `authority.token_revoked` | Emitted once per affected token with `revocation_reason` = `"security_incident"` (see revocation-reason convention below). All other required fields as in the "Delegation or token revoked" row. |
+| DID verification key rotated (§13.3, Appendix C.4) | `credential.renewed` | `credential_type` = `"custom"` (with a payload annotation documenting that the custom credential is an ADCS DID verification key), `previous_fingerprint` (thumbprint of the retired verification key), `new_fingerprint` (thumbprint of the new verification key), `renewed_at`, `valid_from`, `valid_until` |
+
+**Revocation-reason convention for `authority.token_revoked`:** ADCS revocation reasons MUST be mapped to AILS `revocation_reason` enum values as follows. The AILS enum values for this field are fixed by AILS §12.5.1: `policy_change`, `security_incident`, `scope_violation`, `manual_override`, `session_terminated`, `custom`.
+
+| ADCS revocation cause | AILS `revocation_reason` value |
+|---|---|
+| Organizational policy change revokes scope | `policy_change` |
+| Signing key compromise (§13.6) | `security_incident` |
+| CAEP `credential.compromise` received | `security_incident` |
+| Constraint or permission scope breach detected | `scope_violation` |
+| Administrative or operator revocation | `manual_override` |
+| Session termination cascades to tokens | `session_terminated` |
+| Any other deployment-specific reason (including key compromise classified as an operational rather than security event, and chain-abandonment cascades) | `custom` |
+
+**`token_id` vs. `delegation_id` convention for `authority.token_revoked`:** ADCS revocation operates over two distinct identifier spaces — capability token `jti` (§14.4) and delegation/originator `delegation_id` (§14.1, §14.3). When a `authority.token_revoked` event records revocation of a capability token, the AILS `token_id` field MUST be populated with the token's `jti`. When a `authority.token_revoked` event records revocation of a delegation object or an originator declaration, the AILS `token_id` field MUST be populated with the revoked `delegation_id` and the event payload SHOULD include an implementation-specific annotation (e.g., under `context.labels` or an `x-adcs.revoked_identifier_kind` payload field) distinguishing `"token_jti"` from `"delegation_id"` to permit unambiguous downstream correlation with ADCS chain objects. Originator declaration revocation additionally triggers a `policy.violation` event per the table above; the two events share the same `correlation.session_id` (= `chain_id`).
+
+### 23.3 Error Code to Denial Reason Mapping (Normative)
+
+When a chain verification failure produces an `authority.gate_denied` event, the event's `denial_reason` payload field MUST be set per the following mapping. The AILS `denial_reason` enum values are fixed by AILS §12.7.1: `no_token`, `token_expired`, `token_revoked`, `binding_mismatch`, `scope_exceeded`, `intent_mismatch`, `plan_mismatch`, `tenant_mismatch`, `policy_denied`. Implementations MUST include the original ADCS error code in the event payload (e.g., under an `x-adcs.error_code` field or within `context.labels`) to preserve full diagnostic detail.
+
+**Structural errors (§15.1) → `policy_denied`** (except where noted):
+
+| ADCS Error Code | AILS `denial_reason` |
+|---|---|
+| `VERSION_MISMATCH` | `policy_denied` |
+| `MISSING_ORIGINATOR` | `policy_denied` |
+| `EMPTY_CHAIN` | `policy_denied` |
+| `MISSING_TERMINAL_ACTION` | `policy_denied` |
+| `ACTION_ID_MISMATCH` | `intent_mismatch` |
+| `PROTOCOL_MISMATCH` | `intent_mismatch` |
+| `OPERATION_MISMATCH` | `intent_mismatch` |
+| `TARGET_MISMATCH` | `intent_mismatch` |
+| `BROKEN_CHAIN` | `policy_denied` |
+| `INTENT_REFERENCE_MISMATCH` | `intent_mismatch` |
+| `CHAIN_DIGEST_MISMATCH` | `policy_denied` |
+| `TOKEN_CHAIN_MISMATCH` | `binding_mismatch` |
+| `TOKEN_DIGEST_MISMATCH` | `binding_mismatch` |
+| `MISSING_REVOCATION_SERVICE` | `policy_denied` |
+| `DAG_NOT_SUPPORTED` | `policy_denied` |
+
+**Cryptographic errors (§15.2):**
+
+| ADCS Error Code | AILS `denial_reason` |
+|---|---|
+| `INVALID_ORIGINATOR_SIGNATURE` | `policy_denied` |
+| `INVALID_DELEGATION_SIGNATURE` | `policy_denied` |
+| `INVALID_TOKEN_SIGNATURE` | `policy_denied` |
+| `POP_MISMATCH` | `binding_mismatch` |
+| `MISSING_POP` | `binding_mismatch` |
+| `TOKEN_REPLAY` | `binding_mismatch` |
+| `DID_RESOLUTION_FAILURE` | `policy_denied` |
+| `QUORUM_INSUFFICIENT` | `policy_denied` |
+
+**Temporal errors (§15.3):**
+
+| ADCS Error Code | AILS `denial_reason` |
+|---|---|
+| `ORIGINATOR_EXPIRED` | `token_expired` |
+| `ORIGINATOR_TTL_INCONSISTENT` | `policy_denied` |
+| `DELEGATION_EXPIRED` | `token_expired` |
+| `DELEGATION_TTL_INCONSISTENT` | `policy_denied` |
+| `TTL_EXCEEDS_PARENT` | `scope_exceeded` |
+| `TOKEN_EXPIRED` | `token_expired` |
+| `TOKEN_NOT_YET_VALID` | `token_expired` |
+| `TOKEN_TTL_EXCEEDS_CHAIN` | `scope_exceeded` |
+
+**Monotonic restriction errors (§15.4):**
+
+| ADCS Error Code | AILS `denial_reason` |
+|---|---|
+| `PERMISSION_EXPANSION` | `scope_exceeded` |
+| `CONSTRAINT_LOOSENED` | `scope_exceeded` |
+| `UNKNOWN_CONSTRAINT_MODIFIED` | `scope_exceeded` |
+| `PERMISSION_CONDITION_LOOSENED` | `scope_exceeded` |
+| `TOKEN_PERMISSIONS_MISMATCH` | `scope_exceeded` |
+| `TOKEN_CONDITIONAL_PERMISSIONS_MISMATCH` | `scope_exceeded` |
+| `TOKEN_CONSTRAINTS_MISMATCH` | `scope_exceeded` |
+| `UNAUTHORIZED_SUBDELEGATION` | `scope_exceeded` |
+| `DELEGATION_DEPTH_EXCEEDED` | `scope_exceeded` |
+| `DAG_MERGE_VIOLATION` | `scope_exceeded` |
+
+**Revocation errors (§15.5):**
+
+| ADCS Error Code | AILS `denial_reason` |
+|---|---|
+| `ORIGINATOR_REVOKED` | `token_revoked` |
+| `DELEGATION_REVOKED` | `token_revoked` |
+| `TOKEN_REVOKED` | `token_revoked` |
+
+**Compaction errors (§15.6):**
+
+| ADCS Error Code | AILS `denial_reason` |
+|---|---|
+| `INVALID_COMPACTION_SIGNATURE` | `policy_denied` |
+| `INTERMEDIATE_DIGEST_UNAVAILABLE` | `policy_denied` |
+
+Implementations encountering an error code added in a future ADCS revision not listed here MUST default the `denial_reason` to `policy_denied` and MUST include the new error code verbatim in the payload annotation described above.
+
+### 23.4 Envelope Mapping Rules (Normative)
+
+When ADCS audit events are emitted in AILS Event Envelope form (AILS §5, Appendix A), the following mapping rules apply. These rules ensure that AILS envelope fields carry the correct ADCS-layer identity and correlation information without redefining the envelope's semantics.
+
+**Correlation fields (AILS §5.6):**
+
+- `correlation.session_id` MUST equal the chain's `chain_id`. This binds every ADCS event emitted during verification, consumption, or revocation of a chain to the chain's lifetime as an AILS session.
+- `correlation.request_id` SHOULD equal `terminal_action.action_id` when the event is scoped to a specific terminal action invocation.
+- `correlation.trace_id` and `correlation.span_id` MUST conform to W3C Trace Context per AILS REQ-5.6.2. When an ADCS verification runs within an existing OpenTelemetry trace context, emitters MUST propagate the active `trace_id` and `span_id` per AILS REQ-5.6.3; when emitted outside an active trace, a new `trace_id` and `span_id` conforming to the W3C Trace Context format MUST be generated.
+- `correlation.parent_span_id`, when used, SHOULD reference the span of the enclosing protocol operation (the MCP `tools/call`, A2A `tasks/send`, or equivalent) whose authorization the chain is verifying.
+
+**Actor field (AILS §5.5):**
+
+- `actor.id` MUST be set to the DID of the principal whose action caused the event. For delegation-hop creation events (`agent.delegation`), this is the delegator. For permission escalation events (`policy.escalation`), this is the requesting agent. For condition satisfaction events (`human.confirmation`), this is the satisfying principal (= `satisfied_by`).
+- For verifier-emitted events (`authority.gate_passed`, `authority.gate_denied`), `actor.id` MUST be the verifier's own identity, and `actor.type` MUST be `system`.
+- `actor.type` maps from the ADCS principal `type` field as follows: ADCS `human` → AILS `human`; ADCS `system` → AILS `system`; ADCS `agent` → AILS `agent`.
+- When `actor.type` is `agent`, the optional `actor.agent_identity` object SHOULD be populated with the agent's framework (if known) and SPIFFE ID (if the agent's DID is SPIFFE-derived per Appendix C.3).
+
+**Emitter field (AILS §5.4):**
+
+The `emitter` object represents the software component that produced the event and is distinct from `actor`. The following emitter-type mappings apply:
+
+| Component emitting the event | `emitter.type` |
+|---|---|
+| Chain verifier | `security_service` |
+| Governance layer issuing capability tokens | `security_service` |
+| Policy engine handling escalation or condition satisfaction | `security_service` |
+| Agent runtime emitting `agent.delegation` at hop creation | `runtime` |
+| CAEP subscriber processing inbound security events | `security_service` |
+| Revocation service publishing revocation records | `security_service` |
+
+**Data classification (AILS §5.7, §23.3.3):**
+
+- Verifier-emitted events (`authority.gate_passed`, `authority.gate_denied`) default to `SYSTEM_TRUSTED`.
+- Token-issuance events (`authority.token_issued`) where the token authorizes an originator-initiated action default to `USER_TRUSTED` when the originator trust tier is `hardware_bound` or `host_mediated`, and to `SYSTEM_TRUSTED` when the tier is `policy_derived`.
+- Events where the terminal action involves external input (e.g., MCP tool responses, A2A messages received from external agents) MUST be classified `EXTERNAL_UNTRUSTED` per AILS REQ-23.3.3.
+- Condition satisfaction events (`human.confirmation`) emitted in response to a human-approval condition default to `USER_TRUSTED`.
+
+**Originator trust tier carry-through:**
+
+The ADCS originator trust tier from §4.8 — `hardware_bound`, `host_mediated`, or `policy_derived` — MUST be carried in the event payload on `authority.token_issued` events as a field named `originator_trust_tier`, placed within the `scope` object (AILS REQ-12.2.2). This enables AILS consumers to filter, weight, or alert on tokens by the cryptographic strength of the originating human authorization without inspecting the underlying chain.
+
+### 23.5 Serialization and Transport (Normative)
+
+The AILS Event Envelope (AILS §5, Appendix A) is the **reference serialization** for ADCS audit events. An implementation that emits §23.2 events as AILS-conformant envelopes is automatically interoperable with any AILS-conformant consumer without transformation.
+
+Implementations MAY use alternative serializations — OpenTelemetry log records, syslog RFC 5424 messages, CEF (Common Event Format), or proprietary formats — provided that:
+
+1. The ADCS event type names defined in §23.2 are preserved and recoverable from the serialized event.
+2. The payload field names and semantic values defined in §23.2, §23.3, and §23.4 are preserved and recoverable.
+3. The originator trust tier carry-through from §23.4 is preserved on `authority.token_issued` events.
+
+Implementations MUST NOT silently drop fields required by §23.2 when serializing to an alternative format. If a target serialization lacks a native representation for a required field, the implementation MUST encode the field as a well-known extension attribute in a deterministic way documented in the implementation's conformance claim.
+
+Implementations that declare AILS conformance per §23.7 MUST use the AILS Event Envelope and MUST NOT omit required AILS envelope fields (per AILS REQ-5.2.2, REQ-5.15.1, REQ-5.15.2). Implementations declaring `"none"` for `ails_conformance` MAY still emit §23.2 events in any serialization.
+
+Transport of AILS-enveloped events is out of scope for ADCS and is governed by AILS DP-1 (Semantics Over Transport). Events MAY be transported via OpenTelemetry, message queues, HTTP, or any other mechanism that preserves envelope integrity.
+
+### 23.6 Integrity, Retention, and Redaction
+
+**Integrity.** Implementations SHOULD emit audit events with AILS Level 2 integrity fields — `sequence_number`, `stream_id`, and `chain_hash` per AILS §22.4 — to provide tamper-evidence. When the stream scope is per-session, the AILS `stream_id` MUST be set equal to the ADCS `chain_id` per AILS REQ-22.4.7 (applied to ADCS's session analog). Implementations serving deployments with regulatory or high-assurance requirements — including EU AI Act high-risk systems, financial-industry dual-control workflows, and forensic-evidence contexts — SHOULD emit Level 3 signed events per AILS §22.5, using the Ed25519 or ES256 signing algorithms permitted by AILS REQ-22.5.3. Event signatures are computed over the canonical event after any redaction has been applied, per AILS REQ-24.7.1, so redacted events remain integrity-verifiable.
+
+**Retention.** ADCS audit events — as `authority.*`, `session.*`, `credential.*`, and `policy.*` category events — fall within the AILS Governance retention tier per AILS REQ-25.2.1 and SHOULD be retained for a minimum of 3 years from chain termination (measured from the `session.state_changed` event recording the chain's transition to a terminal state, or from the final `authority.token_consumed`/`authority.token_expired` event when no explicit termination event is emitted). This 3-year minimum supersedes the 90-day minimum in §22.6 when audit-grade logging is required. The AILS Regulatory tier (10 years, per AILS REQ-25.2.1) applies when the deployment is subject to EU AI Act Article 12 high-risk-system requirements or equivalent regulatory retention obligations, per AILS §25.6. Deployers MUST retain events for the longer of the AILS minimum and any applicable regulatory requirement per AILS REQ-25.2.2.
+
+**Redaction.** The ADCS `intent` field (§8.3) and human-principal DIDs are sensitive per AILS §24 and SHOULD be redacted under the AILS `default` or `strict` redaction profiles in environments where intent text may contain PII or where regulatory constraints apply. When the ADCS `intent` field is redacted, the redacted value MUST follow AILS REQ-24.4.1 format conventions (`"[REDACTED]"` for omitted, `"sha256:<hex>"` for hashed, etc.) and the redaction MUST be recorded in the envelope `redaction.redacted_fields` array. Cryptographic signatures, `chain_digest` values, DIDs of non-human principals (agents, systems, tools), delegation identifiers, token identifiers, and structural metadata (`permissions_granted`, `constraints_added`, `action_id`, etc.) are **not** sensitive under AILS §24.2 and MUST NOT be redacted — redacting these fields would destroy the audit value of the event and break chain reconstruction. The absolute AILS prohibition on credential material (AILS REQ-24.3.2) applies: raw signing keys, bearer token contents, and private key material MUST NOT appear in ADCS audit events under any configuration.
+
+### 23.7 AILS Conformance Declaration (Normative, OPTIONAL Capability)
+
+The ADCS Configuration Discovery endpoint (§22.7) carries a field `ails_conformance` taking one of four values: `"none"`, `"level_1"`, `"level_2"`, or `"level_3"`. This field declares the deployment's AILS conformance posture and is REQUIRED in the discovery response.
+
+| Value | Meaning |
+|---|---|
+| `"none"` | The implementation does not claim AILS conformance. It MAY still emit §23.2 events in any serialization provided event type and field names are preserved. |
+| `"level_1"` | The implementation emits all §23.2 mapped events in AILS Event Envelope form conforming to AILS Level 1 (AILS §28.2). The integrity envelope is not required. Retention follows the AILS Standard tier (90 days) or Governance tier as appropriate per AILS §25. |
+| `"level_2"` | Level 1 plus: events include the AILS integrity envelope with `sequence_number`, `stream_id`, and `chain_hash` per AILS §22.4. The Governance retention tier (3 years) applies to audit-category events. Mandatory AILS alert conditions (AILS §27) are emitted, including those bound in §23.8. |
+| `"level_3"` | Level 2 plus: events are cryptographically signed per AILS §22.5 with Ed25519 or ES256. The Regulatory retention tier (10 years) is available when applicable per AILS §25. |
+
+Implementations declaring `"level_1"` or higher MUST emit all §23.2 mapped events in AILS Event Envelope form. Implementations declaring `"level_2"` or `"level_3"` MUST additionally meet the corresponding AILS integrity requirements. Implementations declaring `"none"` MAY emit §23.2 events in any serialization, including no serialization at all, and MUST NOT make AILS-conformance claims.
+
+**Cross-standard conformance claim format** (per AILS REQ-28.5.2):
+
+```
+"ADCS v1.0.0 Level N Conformant; AILS v1.0.0 Level K audit events emitted"
+```
+
+where N is the declared ADCS Conformance Level (1, 2, or 3) and K is the declared AILS Conformance Level (1, 2, or 3). ADCS Conformance Level and AILS Conformance Level are independent — an ADCS Level 1 implementation MAY declare AILS Level 3, and an ADCS Level 3 implementation MAY declare AILS Level 1.
+
+Declaring AILS conformance is OPTIONAL and does not affect satisfaction of ADCS Conformance Levels 1, 2, or 3 per §17.1. See §17.3.
+
+### 23.8 Alert Binding (Normative)
+
+Implementations emitting §23.2 events in AILS envelope form MUST emit AILS `system.alert` events under the following conditions, in accordance with AILS §27.2. These alert bindings are in addition to any other alert conditions defined in AILS §27 that apply generically to the categories of events ADCS emits.
+
+**Repeated gate denials.** Three or more `authority.gate_denied` events carrying the same `correlation.session_id` (= ADCS `chain_id`) within a 60-second window, measured per AILS REQ-27.3.2 from the `timestamp` fields of the triggering events, MUST trigger a `system.alert` event with `alert_name` = `authority_gate_denied_repeated` and severity `high`. This binding is the ADCS instantiation of the mandatory AILS alert condition of the same name defined in AILS §27.2.1.
+
+**Critical verification failures.** A chain verification failure producing any of the following ADCS error codes MUST trigger a `system.alert` event with `alert_name` = `policy_violation_critical` and severity `critical`:
+
+- `QUORUM_INSUFFICIENT` (§15.2) — a multi-party originator declaration failed to meet its required quorum threshold
+- `INVALID_ORIGINATOR_SIGNATURE` (§15.2) — a signature forgery or key-compromise scenario at the chain root
+- `CHAIN_DIGEST_MISMATCH` (§15.1) — a tamper or integrity-break condition on the chain object
+- `TOKEN_REPLAY` (§15.2) — a token-replay attack indicator
+- Any `_REVOKED` error code (`ORIGINATOR_REVOKED`, `DELEGATION_REVOKED`, `TOKEN_REVOKED` per §15.5) — action attempted with a revoked authorization artifact
+
+These conditions indicate adversarial activity, chain integrity compromise, or governance-rule violation of a severity warranting immediate operator attention. The alert MUST include `triggering_event_ids` referencing the `event_id` of the originating `authority.gate_denied` event per AILS REQ-27.3.3.
+
+Implementations MAY additionally emit `system.alert` events for other error-code patterns based on deployment risk tolerance. Custom alert conditions MUST use AILS `x-` prefix naming per AILS REQ-27.5.1.
+
+---
 
 ## Appendix A — Core Permission Vocabulary
 
@@ -2226,7 +2487,7 @@ The `delegate` permission MAY be granted conditionally via `permissions_conditio
 
 The `allowed_delegate_types` values are deployment-defined agent type strings. Governance layers enforcing `delegation_scope` MUST verify that the target delegate's registered agent type matches a value in `allowed_delegate_types` before permitting sub-delegation.
 
-<br>
+---
 
 ## Appendix B — Example: Complete Delegation Chain
 
@@ -2357,7 +2618,7 @@ A travel booking workflow with two hops, conditional permissions, and updated st
 
 The booking permission propagates as conditional — not available for unconditional exercise by the hotel search tool. Budget narrowed from $3000 to $1200. `max_delegation_depth` inherited at 3; `hotel-specialist` withheld `delegate`, so no further sub-delegation is possible from this branch regardless.
 
-<br>
+---
 
 ## Appendix C — Agent Identity Lifecycle
 
@@ -2406,7 +2667,7 @@ Organizations MUST maintain an Agent Registry that:
 - Records the `chain_id` values for which each agent has received delegations (for cascade revocation)
 - Is accessible with availability requirements appropriate to the real-time nature of ADCS verification (target: 99.9% uptime; ≤ 100ms p99 response time for DID lookup)
 
-<br>
+---
 
 ## Appendix D — Conformance Test Vectors
 
@@ -2477,7 +2738,7 @@ Expected result: INVALID
 
 Full JSON in repository at `test-vectors/TV-MONO-08.json`.
 
-<br>
+---
 
 ## Appendix E — Reference SDK Architecture
 
@@ -2575,7 +2836,7 @@ interface ConstraintRegistry {
 }
 ```
 
-<br>
+---
 
 ## Appendix F — Implementer Quick Reference
 
@@ -2594,6 +2855,7 @@ interface ConstraintRegistry {
 - [ ] Implement fail-closed behavior: no partial validity (Section 10.9)
 - [ ] Publish constraint evaluation capability declaration (Section 9.4)
 - [ ] Implement all error codes in Section 15 and include them in verification results
+- [ ] Emit audit events per §23 using AILS-aligned event types and payload fields (AILS Event Envelope is the reference serialization; alternatives permitted provided event type names and payload field names are preserved per §23.5)
 
 ### F.2 Additional Requirements for Level 2
 
@@ -2603,6 +2865,7 @@ interface ConstraintRegistry {
 - [ ] Implement token replay prevention: maintain per-session seen-`jti` record (Section 10.4, Step 2.5)
 - [ ] Check capability token revocation at verification time (Section 14.4)
 - [ ] Support token-only presentation mode (Section 7.7)
+- [ ] *Optional:* Declare AILS Level 2 conformance (§23.7) by emitting §23.2 audit events in AILS Event Envelope form with the AILS integrity envelope (sequence_number, stream_id, chain_hash per AILS §22.4) and retaining audit-category events for the Governance tier (3 years per AILS §25)
 
 ### F.3 Additional Requirements for Level 3
 
@@ -2616,6 +2879,7 @@ interface ConstraintRegistry {
 - [ ] Expose ADCS Configuration Discovery endpoint (`/.well-known/adcs-configuration`) (Section 22.7)
 - [ ] *Optional:* DAG workflow chain support (Section 6.6)
 - [ ] *Optional:* Macaroon token support (Section 7.6)
+- [ ] *Optional:* Declare AILS Level 3 conformance (§23.7) by signing §23.2 audit events with Ed25519 or ES256 per AILS §22.5 and retaining audit-category events for the Regulatory tier (10 years per AILS §25) when subject to EU AI Act high-risk-system requirements or equivalent regulation
 
 ### F.4 Verification Algorithm — Four-Phase Summary
 
@@ -2705,6 +2969,6 @@ Revocation (Steps R.1–R.4)
 | `INVALID_COMPACTION_SIGNATURE` | Compaction | 15.6 |
 | `INTERMEDIATE_DIGEST_UNAVAILABLE` | Compaction | 15.6 |
 
-<br>
+---
 
-*End Agent Delegation Chain Standard*
+*End of Agent Delegation Chain Standard*
