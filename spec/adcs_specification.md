@@ -63,7 +63,7 @@ Current agent frameworks do not provide a standard mechanism for this. Each fram
 
 - A sub-agent is granted broader permissions than its delegator possesses
 - Constraints imposed by an originating human are not enforced at the tool invocation layer
-- A long delegation chain becomes opaque — there is no way to verify that each hop honored the scope it received
+- A long delegation chain becomes opaque, there is no way to verify that each hop honored the scope it received
 - Cross-protocol delegations (from an A2A task to an MCP tool) carry no verifiable authorization record
 - Key rotation or agent decommissioning leaves orphaned credentials with residual access
 
